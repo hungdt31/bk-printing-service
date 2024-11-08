@@ -1,0 +1,135 @@
+datasource db {
+  provider = "postgresql" // Adjust the provider according to your database (e.g., "postgresql", "sqlite")
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  customer_id  Int       @id @default(autoincrement())
+  name         String    @db.VarChar(32)
+  password     String    @db.VarChar(128)
+  type         UserType  @default(STUDENT)
+  email        String    @db.VarChar(32)
+  balance      Int       @default(0)
+  last_used    DateTime  @default(now())
+  
+  Document     Document[] @relation("UserDocuments")
+  PrintOrder   PrintOrder[] @relation("UserPrintOrders")
+  PurchaseOrder PurchaseOrder[] @relation("UserPurchaseOrders")
+}
+
+model Spso {
+  spso_id   Int      @id @default(autoincrement())
+  name      String   @db.VarChar(32)
+  username  String   @unique @db.VarChar(32)
+  password  String   @db.VarChar(128)
+  dob       DateTime @default(now())
+  email     String   @db.VarChar(32)
+  phone     String   @db.VarChar(16)
+  last_used DateTime @default(now())
+}
+
+model Printer {
+  printer_id   Int       @id @default(autoincrement())
+  name         String    @unique @db.VarChar(256)
+  brand        String    @db.VarChar(256)
+  model        String    @db.VarChar(256)
+  description  String    @db.VarChar(4096)
+  loc_campus   Campus    @default(ONE)
+  loc_building String    @db.VarChar(64)
+  loc_room     String    @db.VarChar(64)
+  status       PrinterStatus @default(RUNNING)
+  
+  Document     Document[] @relation("PrinterDocuments")
+}
+
+model Document {
+  document_id Int        @id @default(autoincrement())
+  name        String     @db.VarChar(64)
+  file_type   String     @db.VarChar(8)
+  no_of_pages Int
+  user        Customer?  @relation("UserDocuments", fields: [user_id], references: [customer_id])
+  printer     Printer?   @relation("PrinterDocuments", fields: [printer_id], references: [printer_id])
+  
+  user_id     Int?
+  printer_id  Int?
+  
+  PrintOrder  PrintOrder[]
+}
+
+model PrintOrder {
+  print_id         Int           @id @default(autoincrement())
+  side             Side          @default(ONE)
+  page_size        PageSize      @default(A4)
+  orientation      Orientation   @default(PORTRAIT)
+  pages_per_sheet  Int           @default(1)
+  scale            Float         @default(1.00)
+  time_start       DateTime      @default(now())
+  time_end         DateTime      @default(now())
+  status           PrintStatus   @default(PENDING)
+  pages_to_be_printed String?    @db.VarChar(64)
+  num_pages_printed Int?
+  document         Document?     @relation(fields: [document_id], references: [document_id])
+  user             Customer?     @relation("UserPrintOrders", fields: [user_id], references: [customer_id])
+  
+  document_id      Int?
+  user_id          Int?
+}
+
+model PurchaseOrder {
+  purchase_id  Int        @id @default(autoincrement())
+  time         DateTime   @default(now())
+  amount       Int        @default(0)
+  price        Float      @default(0)
+  status       PurchaseStatus @default(UNPAID)
+  user         Customer?  @relation("UserPurchaseOrders", fields: [user_id], references: [customer_id])
+  
+  user_id      Int?
+}
+
+enum UserType {
+  STUDENT
+  LECTURER
+}
+
+enum Campus {
+  ONE
+  TWO
+}
+
+enum PrinterStatus {
+  RUNNING
+  DISABLED
+  DELETED
+}
+
+enum Side {
+  ONE
+  TWO
+}
+
+enum PageSize {
+  A4
+  A3
+}
+
+enum Orientation {
+  PORTRAIT
+  LANDSCAPE
+}
+
+enum PrintStatus {
+  SUCCESS
+  PROGRESS
+  FAILED
+  PENDING
+}
+
+enum PurchaseStatus {
+  UNPAID
+  PAID
+}
