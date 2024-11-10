@@ -76,7 +76,7 @@ authorizedAxiosInstance.interceptors.response.use(
         return authorizedAxiosInstance(originalRequest);
       });
     }
-    if (error.response?.status !== 410) {
+    if (error.response?.status !== 404) {
       // Nếu nhận 401 - Unauthorized thì cần logout người dùng ra khỏi hệ thống
       console.clear();
       console.log(

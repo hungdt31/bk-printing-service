@@ -11,6 +11,6 @@ export const useProfile = () => {
     queryFn: getProfile,
     refetchOnMount: false, // không refetch khi component mount
     retry: false, // nếu không muốn retry khi có lỗi
-    refetchInterval: 1000 * 60.5 * 60,
+    refetchInterval: 1000 * 60 * 60.5,
   });
 };

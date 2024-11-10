@@ -33,6 +33,7 @@ class App {
       response.send("Application is running");
     });
     controllers.forEach((controller) => {
+      // throw new Error("Method not implemented.");
       this.app.use("/api", [authMiddleware.isAuthorized], controller.router);
     });
   }
