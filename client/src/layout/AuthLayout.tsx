@@ -10,7 +10,7 @@ import { paths } from "@/utils/path";
 export const AuthLayout = () => {
   const [scrollY, setScrollY] = useState(0);
   const navigate = useNavigate();
-  const { data, isError } = useProfile();
+  const { data, isError, isLoading } = useProfile();
 
   const handleScroll = () => {
     setScrollY(window.scrollY);
@@ -21,7 +21,7 @@ export const AuthLayout = () => {
     window.addEventListener("scroll", handleScroll);
 
     // Redirect if not authenticated
-    if (data && !isError) {
+    if (!isLoading && data && !isError) {
       navigate(REDIRECT_IF_AUTHENTICATED);
     }
 
@@ -29,7 +29,7 @@ export const AuthLayout = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [data, isError]);
+  }, [data, isError, isLoading, navigate]);
 
   return (
     <div

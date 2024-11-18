@@ -5,7 +5,11 @@ import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
 import { paths } from "./utils/path";
 import { PrivateLayout } from "@/layout/PrivateLayout";
-import { Profile } from "@/pages/Profile";
+import { Profile } from "@/pages/Dashboard/Profile";
+import { OrderPage } from "@/pages/Dashboard/Order";
+import { HistoryLog } from "@/pages/Dashboard/History";
+import { SupportPage } from "./pages/Dashboard/Support";
+import { BuyPage } from "./pages/Dashboard/Buy";
 
 export const AuthRoutes = {
   layout: AuthLayout,
@@ -38,5 +42,21 @@ export const PrivateRoutes = {
       path: paths.Profile,
       element: Profile,
     },
+    {
+      path: paths.Order,
+      element: OrderPage
+    },
+    {
+      path: paths.History,
+      element: HistoryLog
+    },
+    {
+      path: paths.Support,
+      element: SupportPage
+    },
+    {
+      path: paths.BuyPage,
+      element: BuyPage
+    }
   ],
 };

@@ -5,11 +5,16 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { REDIRECT_IF_NOT_AUTHENTICATED } from "@/utils/path";
 import { useProfile } from "@/hooks/useProfile";
+import Footer from "@/components/Footer";
+import { useWindowWidth } from "@react-hook/window-size";
+import NavBar from "@/components/NavBar";
+import UserBar from "@/components/NavBar/user-bar";
 
 export const PrivateLayout = () => {
   const [scrollY, setScrollY] = useState(0);
+  const width = useWindowWidth();
   const navigate = useNavigate();
-  const { data, isError } = useProfile();
+  const { data, isError, isLoading } = useProfile();
 
   const handleScroll = () => {
     setScrollY(window.scrollY);
@@ -19,8 +24,8 @@ export const PrivateLayout = () => {
     // Attach scroll event listener
     window.addEventListener("scroll", handleScroll);
 
-    // Redirect if not authenticated
-    if (!data || isError) {
+    // Redirect if not authenticated and loading is complete
+    if (!isLoading && (!data || isError)) {
       navigate(REDIRECT_IF_NOT_AUTHENTICATED);
     }
 
@@ -28,15 +33,41 @@ export const PrivateLayout = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [data, isError]);
+  }, [data, isError, isLoading, navigate]);
+
+  // Nếu dữ liệu vẫn đang tải, có thể hiển thị loading spinner
+  if (isLoading) {
+    return <div>Loading...</div>; // Hoặc là một spinner
+  }
+
+  if (width >= 768) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="flex grow">
+          <NavBar />
+          <div className="flex flex-col grow">
+            <UserBar />
+            <div className="flex grow">
+              <Outlet />
+            </div>
+          </div>
+        </div>
+        <Toaster />
+        <Footer />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col gap-3 min-h-[1500px]">
+    <div className="flex flex-col min-h-screen">
       <div className={cn(scrollY > 100 ? "fixed top-0 right-0 left-0" : "")}>
         <Header />
       </div>
-      <Outlet />
+      <div className="grow flex">
+        <Outlet />
+      </div>
       <Toaster />
+      <Footer />
     </div>
   );
 };

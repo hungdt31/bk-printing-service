@@ -2,7 +2,11 @@ export const paths = {
   Home: "/",
   LoginPage: "/sign-in",
   SignupPage: "/sign-up",
-  Profile: "/profile",
+  Profile: "/dashboard/profile",
+  Order: "/dashboard/order",
+  History: "/dashboard/history",
+  Support: "/dashboard/support",
+  BuyPage: "/dashboard/buy",
 };
 
 // Default direct for actions

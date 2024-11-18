@@ -5,6 +5,7 @@ import { DropdownMenuDemo } from "./Menu";
 import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 import Options from "./Options";
+import Logo from "../Logo";
 
 
 export default function Header() {
@@ -13,11 +14,8 @@ export default function Header() {
     return <div className="py-5 px-3">Đang cập nhật phiên đăng nhập...</div>;
   return (
     <div className="flex items-center justify-between border-b-[1px] shadow-md py-5 px-3 w-full bg-white">
-      <Link to={paths.Home} className="flex items-center gap-3">
-        <img src="logo.png" width={50} height={50} />
-        <h2 className="line-clamp-1">BKPS</h2>
-      </Link>
-      <Options/>
+      <Logo />
+      <Options />
       <>
         {isError ? (
           <Link to={paths.LoginPage}>

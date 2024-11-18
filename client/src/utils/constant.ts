@@ -1,25 +1,31 @@
 import { paths } from "./path"
-import { Printer, PrinterCheck, FolderClock } from "lucide-react"
+import { Printer, FolderClock } from "lucide-react"
 import { FaLinkedin, FaYoutube } from "react-icons/fa";
 import { BsInstagram } from "react-icons/bs";
 import { BsTwitterX } from "react-icons/bs";
+import { BiSolidUserAccount } from "react-icons/bi";
+import { RiFolderHistoryLine } from "react-icons/ri";
+import { FaPrint } from "react-icons/fa";
+import { MdContactSupport } from "react-icons/md";
+import { IoBagAdd } from "react-icons/io5";
+import { FilePlus } from "lucide-react";
 
 export const SubHeader = [
   {
     name: 'In tài liệu',
-    path: paths.LoginPage,
+    path: paths.Order,
     icon: Printer
   },
   {
     name: 'Lịch sử in',
-    path: paths.Home,
+    path: paths.History,
     icon: FolderClock
   },
   {
-    name: 'Đặt in',
-    path: paths.Home,
-    icon: PrinterCheck
-  },
+    name: 'Mua trang in',
+    path: paths.BuyPage,
+    icon: FilePlus
+  }
 ]
 
 export const socials = [
@@ -38,5 +44,33 @@ export const socials = [
   {
     icon: FaYoutube,
     path: 'https://www.youtube.com/watch?v=1StQKTAVPfk'
+  }
+]
+
+export const navbar = [
+  {
+    name: "Thông tin cá nhân",
+    path: paths.Profile,
+    icon: BiSolidUserAccount
+  },
+  {
+    name: "Lịch sử in",
+    path: paths.History,
+    icon: RiFolderHistoryLine
+  },
+  {
+    name: "Đặt in",
+    path: paths.Order,
+    icon: FaPrint
+  },
+  {
+    name: "Mua trang in",
+    path: paths.BuyPage,
+    icon: IoBagAdd
+  },
+  {
+    name: "Hỗ trợ",
+    path: paths.Support,
+    icon: MdContactSupport
   }
 ]
