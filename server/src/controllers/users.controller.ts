@@ -1,15 +1,17 @@
 import express from "express";
 import { BaseController } from "./abstractions/base-controller";
-import { userMiddleware } from "../middlewares/user.middleware";
+import RequestValidator from "../middlewares/request-validator";
 import { prisma } from "../providers/prisma.client";
 import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcryptjs";
 import expressAsyncHandler from "express-async-handler";
 import { JwtProvider } from "../providers/jwt.provider";
 import ms from "ms";
-import { userInfo } from "os";
 import { JwtPayload } from "../types/jwt-payload";
 import { tokenLife } from "../utils/constant";
+import { LoginSchema, RegisterSchema } from "../schemas/user.schema";
+import { SettingsService } from "../providers/settings.service";
+import { UpdateSettingsSchema } from "../schemas/settings.schema";
 
 export default class UsersController extends BaseController {
   public path = "/users";
@@ -22,17 +24,21 @@ export default class UsersController extends BaseController {
   public initializeRoutes() {
     this.router.post(
       `${this.path}/login`,
-      [userMiddleware.loginRequest],
+      [new RequestValidator(LoginSchema).validate()],
       this.login,
     );
     this.router.post(
       `${this.path}/register`,
-      [userMiddleware.registerRequest],
+      [new RequestValidator(RegisterSchema).validate()],
       this.register,
     );
     this.router.put(`${this.path}/refresh-token`, this.refresh_token);
     this.router.get(`${this.path}/profile`, this.profile);
     this.router.delete(`${this.path}/logout`, this.logout);
+    this.router.put(
+      `${this.path}/update-settings`, 
+      [new RequestValidator(UpdateSettingsSchema).validate()],
+      this.updateDefaultBalanceAndTimeToAddBalance);
   }
 
   login = expressAsyncHandler(
@@ -41,7 +47,7 @@ export default class UsersController extends BaseController {
       response: express.Response,
       next: express.NextFunction,
     ) => {
-      const customer = await prisma.customer.findFirst({
+      const customer = await prisma.user.findFirst({
         where: {
           email: request.body.email,
         },
@@ -64,10 +70,10 @@ export default class UsersController extends BaseController {
       }
 
       const customerInfo = {
-        id: customer.customer_id,
-        name: customer.name,
+        id: customer.user_id,
+        username: customer.username,
         email: customer.email,
-        type: customer.type,
+        role: customer.role,
       };
 
       const accessToken = await JwtProvider.generateToken(
@@ -119,9 +125,9 @@ export default class UsersController extends BaseController {
       )) as JwtPayload;
 
       // console.log("refreshTokenDecoded: ", refreshTokenDecoded);
-      const customer = await prisma.customer.findUnique({
+      const customer = await prisma.user.findUnique({
         where: {
-          customer_id: refreshTokenDecoded.id,
+          user_id: refreshTokenDecoded.id,
         },
       });
       if (!customer) {
@@ -135,8 +141,8 @@ export default class UsersController extends BaseController {
         {
           id: refreshTokenDecoded.id,
           email: refreshTokenDecoded.email,
-          name: refreshTokenDecoded.name,
-          type: refreshTokenDecoded.type,
+          username: refreshTokenDecoded.username,
+          role: refreshTokenDecoded.role,
         },
         process.env.ACCESS_TOKEN_SECRET_SIGNATURE as string,
         tokenLife.accessToken,
@@ -163,19 +169,19 @@ export default class UsersController extends BaseController {
   register = async (request: express.Request, response: express.Response) => {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(request.body.password, salt);
-    const customer = await prisma.customer.create({
+    const customer = await prisma.user.create({
       data: {
         email: request.body.email,
-        name: request.body.name,
+        username: request.body.username,
         password: hashedPassword,
-        type: request.body.type ? request.body.type : "STUDENT",
+        role: request.body.role ? request.body.role : "STUDENT",
       },
     });
     response.status(StatusCodes.OK).json({
       data: {
-        id: customer.customer_id,
+        id: customer.user_id,
         email: customer.email,
-        name: customer.name,
+        username: customer.username,
       },
       message: "Register successfully!",
     });
@@ -195,4 +201,14 @@ export default class UsersController extends BaseController {
       response.status(StatusCodes.OK).json({ message: "Logout successfully" });
     },
   );
+
+  updateDefaultBalanceAndTimeToAddBalance = async (
+    request: express.Request,
+    response: express.Response,
+  ) => {
+    await SettingsService.writeSettings(request.body);
+    response
+      .status(StatusCodes.OK)
+      .json({ message: "Update balance successfully" });
+  };
 }

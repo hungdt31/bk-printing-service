@@ -27,7 +27,7 @@ export const Profile = () => {
             <Button variant={"secondary"} className="min-w-[100px]">
               Họ và tên
             </Button>
-            <span>{data?.name}</span>
+            <span>{data?.username}</span>
           </div>
           <div className="flex items-center gap-3">
             <Button variant={"secondary"} className="min-w-[100px]">
@@ -39,7 +39,7 @@ export const Profile = () => {
             <Button variant={"secondary"} className="min-w-[100px]">
               Vai trò
             </Button>
-            <span>{data?.type}</span>
+            <span>{data?.role}</span>
           </div>
         </div>
       </CardContent>

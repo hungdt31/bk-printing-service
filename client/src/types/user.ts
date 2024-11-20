@@ -14,9 +14,9 @@ export interface LoginResponse {
 export interface ProfileResponse {
   profile: {
     id: number;
-    name: string;
+    username: string;
     email: string;
-    type: string
+    role: string
   };
   message: string;
 }

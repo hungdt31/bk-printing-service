@@ -7,6 +7,9 @@ import { colorText } from "./utils/constant";
 import { corsOptions } from "./config/corsOptions";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import cron from "node-cron";
+import { prisma } from "./providers/prisma.client";
+import { SettingsService } from "./providers/settings.service";
 
 class App {
   public app: express.Application;
@@ -44,7 +47,19 @@ class App {
   }
 
   public listen() {
-    this.app.listen(this.port, () => {
+    this.app.listen(this.port, async () => {
+      const settings = await SettingsService.readSettings();
+      cron.schedule(settings.DATE_TO_UPDATE, async () => {
+        try {
+          // add value of default balance to balance column of all users
+          await prisma.$executeRaw`
+          Update "User" 
+          Set "balance" = "balance" + ${settings.DEFAULT_BALANCE}`;
+          console.log(settings);
+        } catch (error) {
+          console.error("[CRON] Error:", error);
+        }
+      });
       console.log(colorText, `[LISTENING]: http://localhost:${this.port}`);
     });
   }

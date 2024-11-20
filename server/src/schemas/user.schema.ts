@@ -8,5 +8,6 @@ export const LoginSchema = z.object({
 export const RegisterSchema = z.object({
   email: z.string().email(),
   password: z.string().min(4).max(16),
-  name: z.string().min(1),
+  username: z.string().min(1),
+  role: z.enum(["STUDENT", "LECTURER", "SPSO"]),
 });

@@ -8,76 +8,78 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Customer {
-  customer_id  Int       @id @default(autoincrement())
-  name         String    @db.VarChar(32)
-  password     String    @db.VarChar(128)
-  type         UserType  @default(STUDENT)
-  email        String    @db.VarChar(32)
-  balance      Int       @default(0)
-  last_used    DateTime  @default(now())
-  
-  Document     Document[] @relation("UserDocuments")
-  PrintOrder   PrintOrder[] @relation("UserPrintOrders")
-  PurchaseOrder PurchaseOrder[] @relation("UserPurchaseOrders")
-}
-
-model Spso {
-  spso_id   Int      @id @default(autoincrement())
-  name      String   @db.VarChar(32)
-  username  String   @unique @db.VarChar(32)
-  password  String   @db.VarChar(128)
-  dob       DateTime @default(now())
-  email     String   @db.VarChar(32)
-  phone     String   @db.VarChar(16)
-  last_used DateTime @default(now())
+model User {
+  user_id           Int          @id @default(autoincrement())
+  username          String?      @unique @db.VarChar(32) // Optional for customers
+  password          String       @db.VarChar(128)
+  email             String       @db.VarChar(32)
+  phone             String?      @db.VarChar(16) // Optional for customers
+  dob               DateTime?    // Optional for customers
+  balance           Int?         @default(0) // Optional for SPSO
+  created_at        DateTime     @default(now())
+  last_used         DateTime     @default(now())  @updatedAt
+  role              UserRole     @default(STUDENT) // Distinguish user roles
+  // Relations
+  printOrders       PrintOrder[]    @relation("UserPrintOrders")
+  purchaseOrders    PurchaseOrder[] @relation("UserPurchaseOrders")
+  documents         Document[]      @relation("UserDocuments")
 }
 
 model Printer {
   printer_id   Int       @id @default(autoincrement())
-  name         String    @unique @db.VarChar(256)
-  brand        String    @db.VarChar(256)
-  model        String    @db.VarChar(256)
-  description  String    @db.VarChar(4096)
-  loc_campus   Campus    @default(ONE)
-  loc_building String    @db.VarChar(64)
-  loc_room     String    @db.VarChar(64)
+  name         String    @unique @db.VarChar(256)  // Tên của máy in, đảm bảo duy nhất để tránh trùng lặp tên
+  brand        String    @db.VarChar(256) // Thương hiệu (brand) của máy in, ví dụ: Canon, HP, Epson
+  model        String    @db.VarChar(256) // Model của máy in, ví dụ: "HP LaserJet Pro MFP M428fdw"
+  description  String    @db.VarChar(4096) // Mô tả chi tiết về máy in, bao gồm các thông tin như tính năng, giới hạn, hoặc hướng dẫn sử dụng
+  loc_campus   Campus    @default(ONE) // Tên khuôn viên (campus) mà máy in được đặt, với giá trị mặc định là ONE
+  loc_building Building  @default(H1) // Tên tòa nhà mà máy in được đặt trong khuôn viên
+  loc_room     String    @db.VarChar(64) // Số phòng cụ thể mà máy in được đặt
+  // Trạng thái của máy in, với giá trị mặc định là RUNNING
+  // Các trạng thái có thể bao gồm: RUNNING (hoạt động), DISABLED (vô hiệu hóa), v.v.
   status       PrinterStatus @default(RUNNING)
-  
-  Document     Document[] @relation("PrinterDocuments")
-}
-
-model Document {
-  document_id Int        @id @default(autoincrement())
-  name        String     @db.VarChar(64)
-  file_type   String     @db.VarChar(8)
-  no_of_pages Int
-  user        Customer?  @relation("UserDocuments", fields: [user_id], references: [customer_id])
-  printer     Printer?   @relation("PrinterDocuments", fields: [printer_id], references: [printer_id])
-  
-  user_id     Int?
-  printer_id  Int?
-  
-  PrintOrder  PrintOrder[]
+  // Mối quan hệ giữa máy in và các tài liệu đã được in qua máy in này
+  // Một máy in có thể liên kết với nhiều tài liệu (1:N)
+  printOrders    PrintOrder[] @relation("PrintOrderDocuments")
 }
 
 model PrintOrder {
-  print_id         Int           @id @default(autoincrement())
-  side             Side          @default(ONE)
-  page_size        PageSize      @default(A4)
-  orientation      Orientation   @default(PORTRAIT)
-  pages_per_sheet  Int           @default(1)
-  scale            Float         @default(1.00)
-  time_start       DateTime      @default(now())
-  time_end         DateTime      @default(now())
-  status           PrintStatus   @default(PENDING)
-  pages_to_be_printed String?    @db.VarChar(64)
-  num_pages_printed Int?
-  document         Document?     @relation(fields: [document_id], references: [document_id])
-  user             Customer?     @relation("UserPrintOrders", fields: [user_id], references: [customer_id])
-  
-  document_id      Int?
-  user_id          Int?
+  print_id              Int           @id @unique @default(autoincrement())
+  side                  Side          @default(ONE) // In một mặt hoặc hai mặt
+  page_size             PageSize      @default(A4)  // Kích thước trang in (A4, A3, Letter, v.v.)
+  orientation           Orientation   @default(PORTRAIT) // Hướng in
+  pages_per_sheet       Int           @default(1)   // Số trang trên một tờ
+  scale                 Float         @default(1.0) // Tỉ lệ thu phóng (1.0 = 100%)
+  time_start            DateTime      @default(now()) // Thời điểm bắt đầu in
+  time_end              DateTime?                  // Thời điểm hoàn thành in
+  status                PrintStatus   @default(PENDING) // Trạng thái lệnh in
+  pages_to_be_printed   String?       @db.VarChar(64) // Ví dụ: "1-3, 5, 7-9"
+  num_pages_printed     Int?                          // Số trang đã in thực tế
+
+  document_id           Int?           // Liên kết với Document
+  document              Document?     @relation("DocumentPrintOrders", fields: [document_id], references: [document_id], onDelete: SetNull, onUpdate: Cascade)
+
+  user_id               Int           // Liên kết với User
+  user                  User          @relation("UserPrintOrders", fields: [user_id], references: [user_id])
+
+  printer_id            Int
+  printer               Printer       @relation("PrintOrderDocuments", fields: [printer_id], references: [printer_id])
+
+  report_id             Int?
+  report                Report?       @relation("PrintOrderReports", fields: [report_id], references: [report_id])
+}
+
+
+model Document {
+  document_id     Int           @id @default(autoincrement())
+  filename        String        @db.VarChar(64)
+  mimetype        String        @db.VarChar(64) // Ví dụ: pdf, docx
+  page_count      String        @default("unknown")
+  size            Int           @default(0)    // Đơn vị: KB hoặc MB
+  url             String        @db.VarChar(256) // Đường dẫn file (Cloud hoặc local)
+  path            String        @unique @db.VarChar(256) // Đường dẫn file trong bucket
+  user_id         Int
+  user            User          @relation("UserDocuments", fields: [user_id], references: [user_id])
+  printOrders     PrintOrder[]  @relation("DocumentPrintOrders")
 }
 
 model PurchaseOrder {
@@ -86,19 +88,37 @@ model PurchaseOrder {
   amount       Int        @default(0)
   price        Float      @default(0)
   status       PurchaseStatus @default(UNPAID)
-  user         Customer?  @relation("UserPurchaseOrders", fields: [user_id], references: [customer_id])
-  
+
+  user         User?      @relation("UserPurchaseOrders", fields: [user_id], references: [user_id])
   user_id      Int?
 }
 
-enum UserType {
+model Report {
+  report_id     Int           @id @default(autoincrement())
+  type          ReportType
+  month         Int
+  year          Int
+  total_pages   Int
+  printOrders   PrintOrder[]  @relation("PrintOrderReports")
+}
+
+enum UserRole {
   STUDENT
   LECTURER
+  SPSO
 }
 
 enum Campus {
   ONE
   TWO
+}
+
+enum Building {
+  H1
+  H2
+  H3
+  H6
+  Gymnasium
 }
 
 enum PrinterStatus {
@@ -132,4 +152,10 @@ enum PrintStatus {
 enum PurchaseStatus {
   UNPAID
   PAID
+  CANCELED
+}
+
+enum ReportType {
+  MONTHLY
+  YEARLY
 }

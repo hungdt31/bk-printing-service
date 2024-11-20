@@ -1,7 +1,7 @@
 import { JwtProvider } from "../providers/jwt.provider";
 import { StatusCodes } from "http-status-codes";
 import express from "express";
-import { colorText, protectedRoutes } from "../utils/constant";
+import { colorText, protectedRoutes, spsoRoutes } from "../utils/constant";
 import createHttpError from "http-errors";
 import { JwtPayload } from "../types/jwt-payload";
 
@@ -13,10 +13,10 @@ const isAuthorized = async (
   next: express.NextFunction,
 ) => {
   console.log(colorText, "[ENDPOINT]", req.method, req.originalUrl);
-  const isPrivate = protectedRoutes.includes(req.originalUrl);
-  if (isPrivate) {
+  const isProtected = protectedRoutes.includes(req.originalUrl);
+  const isSPSO = spsoRoutes.includes(req.originalUrl);
+  if (isProtected) {
     const accessTokenFromCookie = req.cookies?.accessToken;
-    // console.log("Access token: ", accessTokenFromCookie);
     try {
       const accessTokenDecoded: JwtPayload = (await JwtProvider.verifyToken(
         accessTokenFromCookie,
@@ -25,6 +25,7 @@ const isAuthorized = async (
       // console.log(accessTokenDecoded);
       req.jwtDecoded = accessTokenDecoded;
       next();
+      return;
     } catch (error) {
       // console.log("Error from authMiddleware: ", error);
 
@@ -38,12 +39,44 @@ const isAuthorized = async (
         createHttpError(StatusCodes.UNAUTHORIZED, "Unauthorized: Please login"),
       );
     }
-    return next(
-      createHttpError(
-        StatusCodes.UNAUTHORIZED,
-        "You don't have permission to access this endpoint!",
-      ),
-    );
+    // return next(
+    //   createHttpError(
+    //     StatusCodes.UNAUTHORIZED,
+    //     "You don't have permission to access this endpoint!",
+    //   ),
+    // );
+  } else if (isSPSO) {
+    const accessTokenFromCookie = req.cookies?.accessToken;
+    // console.log("Access token: ", accessTokenFromCookie);
+    try {
+      const accessTokenDecoded: JwtPayload = (await JwtProvider.verifyToken(
+        accessTokenFromCookie,
+        process.env.ACCESS_TOKEN_SECRET_SIGNATURE as string,
+      )) as JwtPayload;
+      if (accessTokenDecoded.role !== "SPSO") {
+        return next(
+          createHttpError(
+            StatusCodes.UNAUTHORIZED,
+            "You don't have permission to access this endpoint!",
+          ),
+        );
+      }
+      req.jwtDecoded = accessTokenDecoded;
+      next();
+      return;
+    } catch (error) {
+      // console.log("Error from authMiddleware: ", error);
+
+      if (error instanceof Error && error.message?.includes("jwt expired")) {
+        return next(
+          createHttpError(StatusCodes.NOT_FOUND, "Need to refresh token"),
+        );
+      }
+
+      return next(
+        createHttpError(StatusCodes.UNAUTHORIZED, "Unauthorized: Please login"),
+      );
+    }
   }
   next();
 };

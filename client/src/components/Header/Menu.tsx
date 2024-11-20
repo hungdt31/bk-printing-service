@@ -71,7 +71,7 @@ export function DropdownMenuDemo() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mr-3">
         <DropdownMenuLabel className="text-center">
-          Xin chào, <span className="text-primary">{data?.name}</span>
+          Xin chào, <span className="text-primary">{data?.username}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
@@ -81,12 +81,11 @@ export function DropdownMenuDemo() {
             label="Thông tin cá nhân"
           />
           <DropdownMenuLinkItem
-            to={paths.Profile}
+            to={paths.Support}
             icon={CircleHelp}
             label="Hỗ trợ"
           />
         </DropdownMenuGroup>
-
         <div className={
           cn(width < 768 ? "" : "hidden")
         }>
