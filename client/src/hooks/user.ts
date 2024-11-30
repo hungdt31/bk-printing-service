@@ -1,13 +1,10 @@
 import { getProfile } from "@/data/user";
 import { useQuery } from "@tanstack/react-query";
-
-export const userKey = {
-  profile: ["profile"],
-};
+import { queryKeys } from "@/utils/constant";
 
 export const useProfile = () => {
   return useQuery({
-    queryKey: userKey.profile,
+    queryKey: [queryKeys.profile],
     queryFn: getProfile,
     refetchOnMount: false, // không refetch khi component mount
     retry: false, // nếu không muốn retry khi có lỗi

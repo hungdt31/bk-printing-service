@@ -11,6 +11,6 @@ export default function errorMiddleware(
   const message = error.message || "Something went wrong";
   response.status(status).json({
     status,
-    message: status == 500 ? error.name : message,
+    message: status == 500 ? error.message : message,
   });
 }

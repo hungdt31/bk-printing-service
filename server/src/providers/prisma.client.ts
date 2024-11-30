@@ -156,6 +156,13 @@ async function initializeData() {
         ],
       });
       console.log("Default print orders have been added.");
+      // thêm các dữ liệu mặc định cho bảng Report
+      const reportCount = await prisma.report.count();
+      if (reportCount === 0) {
+        await prisma.report.createMany({
+          data: [],
+        });
+      }
     }
   } catch (error) {
     console.error("Error initializing data:", error);

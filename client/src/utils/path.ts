@@ -7,6 +7,7 @@ export const paths = {
   History: "/dashboard/history",
   Support: "/dashboard/support",
   BuyPage: "/dashboard/buy",
+  OrderSettings: "/dashboard/order/settings",
 };
 
 // Default direct for actions

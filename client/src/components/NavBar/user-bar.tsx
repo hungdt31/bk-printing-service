@@ -1,5 +1,5 @@
 import UserNav from "../Header/UserNav";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@/hooks/user";
 
 export default function UserBar() {
   const { data } = useProfile();

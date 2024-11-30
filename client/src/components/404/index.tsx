@@ -1,5 +1,5 @@
 import { useLottie } from "lottie-react";
-import notfoundAnimation from "../../assets/animation/404.json";
+import notfoundAnimation from "@/assets/animation/404.json";
 
 const NotFoundPage = () => {
   const options = {

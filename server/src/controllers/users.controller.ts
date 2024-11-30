@@ -12,6 +12,7 @@ import { tokenLife } from "../utils/constant";
 import { LoginSchema, RegisterSchema } from "../schemas/user.schema";
 import { SettingsService } from "../providers/settings.service";
 import { UpdateSettingsSchema } from "../schemas/settings.schema";
+import createHttpError from "http-errors";
 
 export default class UsersController extends BaseController {
   public path = "/users";
@@ -34,11 +35,13 @@ export default class UsersController extends BaseController {
     );
     this.router.put(`${this.path}/refresh-token`, this.refresh_token);
     this.router.get(`${this.path}/profile`, this.profile);
+    this.router.get(this.path, this.getListUsers);
     this.router.delete(`${this.path}/logout`, this.logout);
-    this.router.put(
-      `${this.path}/update-settings`, 
+    this.router.patch(
+      `${this.path}/update-settings`,
       [new RequestValidator(UpdateSettingsSchema).validate()],
-      this.updateDefaultBalanceAndTimeToAddBalance);
+      this.updateDefaultBalanceAndTimeToAddBalance,
+    );
   }
 
   login = expressAsyncHandler(
@@ -166,30 +169,49 @@ export default class UsersController extends BaseController {
     }
   };
 
-  register = async (request: express.Request, response: express.Response) => {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(request.body.password, salt);
-    const customer = await prisma.user.create({
-      data: {
-        email: request.body.email,
-        username: request.body.username,
-        password: hashedPassword,
-        role: request.body.role ? request.body.role : "STUDENT",
-      },
-    });
-    response.status(StatusCodes.OK).json({
-      data: {
-        id: customer.user_id,
-        email: customer.email,
-        username: customer.username,
-      },
-      message: "Register successfully!",
-    });
-  };
+  register = expressAsyncHandler(
+    async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+      const existingUser = await prisma.user.findUnique({
+        where: { email: request.body.email }
+      });
+      if (existingUser) {
+        return next(createHttpError(StatusCodes.CONFLICT, "Email already exists"));
+      }
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(request.body.password, salt);
+      const customer = await prisma.user.create({
+        data: {
+          email: request.body.email,
+          username: request.body.username,
+          password: hashedPassword,
+          role: request.body.role ? request.body.role : "STUDENT",
+        },
+      });
+      response.status(StatusCodes.OK).json({
+        data: {
+          id: customer.user_id,
+          email: customer.email,
+          username: customer.username,
+        },
+        message: "Register successfully!",
+      });
+    },
+  );
 
   profile = async (request: express.Request, response: express.Response) => {
+    const user = await prisma.user.findUnique({
+      where: {
+        user_id: request.jwtDecoded?.id,
+      },
+    });
+    if (!user) {
+      response
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "User not found" });
+      return;
+    }
     response.status(StatusCodes.OK).json({
-      profile: request.jwtDecoded,
+      profile: user,
       message: "Profile information",
     });
   };
@@ -211,4 +233,14 @@ export default class UsersController extends BaseController {
       .status(StatusCodes.OK)
       .json({ message: "Update balance successfully" });
   };
+
+  getListUsers = expressAsyncHandler(
+    async (request: express.Request, response: express.Response) => {
+      const users = await prisma.user.findMany();
+      response.status(StatusCodes.OK).json({
+        data: users,
+        message: "Get list users successfully!",
+      });
+    },
+  );
 }

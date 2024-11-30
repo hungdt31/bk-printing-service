@@ -9,9 +9,9 @@ import { CardWrapper } from "../CardWrapper";
 import CustomField from "@/components/CustomFormField";
 import { useNavigate } from "react-router-dom";
 import { hanldeLogin } from "@/action/login";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { DEFAULT_DIRECT_AFTER_LOGIN } from "@/utils/path";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@/hooks/user";
 
 export function LoginForm() {
   const { refetch } = useProfile();

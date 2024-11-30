@@ -66,6 +66,16 @@ export function SignupForm() {
               label="Vai trò"
               placeholder="Chọn một vai trò"
               type="select"
+              options={[
+                {
+                  value: 'STUDENT',
+                  label: 'Sinh viên'
+                },
+                {
+                  value: 'LECTURER',
+                  label: 'Cán bộ/ giảng viên'
+                }
+              ]}
               disabled={isPending}
             />
           </div>

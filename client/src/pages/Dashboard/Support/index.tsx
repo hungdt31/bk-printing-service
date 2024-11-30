@@ -1,12 +1,11 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DashboardWrapper } from "@/components/DashboardWrapper"
 
 export const SupportPage = () => {
   return (
-    <Card className="w-full m-3">
-      <CardHeader>
-        <CardTitle className="font-bold text-xl">FAQ</CardTitle>
-        <CardDescription>Xem các thông tin sau về chúng tôi</CardDescription>
-      </CardHeader>
-    </Card>
+    <DashboardWrapper title="Hỗ trợ">
+      <div>
+        Nothing
+      </div>
+    </DashboardWrapper>
   )
 }

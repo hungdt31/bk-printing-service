@@ -10,6 +10,7 @@ import { OrderPage } from "@/pages/Dashboard/Order";
 import { HistoryLog } from "@/pages/Dashboard/History";
 import { SupportPage } from "./pages/Dashboard/Support";
 import { BuyPage } from "./pages/Dashboard/Buy";
+import { OrderSettings } from "./pages/Dashboard/Order/Settings";
 
 export const AuthRoutes = {
   layout: AuthLayout,
@@ -57,6 +58,10 @@ export const PrivateRoutes = {
     {
       path: paths.BuyPage,
       element: BuyPage
+    },
+    {
+      path: paths.OrderSettings,
+      element: OrderSettings
     }
   ],
 };

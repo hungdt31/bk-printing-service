@@ -1,6 +1,6 @@
 import { paths } from "./path"
 import { Printer, FolderClock } from "lucide-react"
-import { FaLinkedin, FaYoutube } from "react-icons/fa";
+import { FaFileExcel, FaFilePowerpoint, FaFileWord, FaLinkedin, FaYoutube } from "react-icons/fa";
 import { BsInstagram } from "react-icons/bs";
 import { BsTwitterX } from "react-icons/bs";
 import { BiSolidUserAccount } from "react-icons/bi";
@@ -9,6 +9,8 @@ import { FaPrint } from "react-icons/fa";
 import { MdContactSupport } from "react-icons/md";
 import { IoBagAdd } from "react-icons/io5";
 import { FilePlus } from "lucide-react";
+import { FaFilePdf, FaFileImage } from "react-icons/fa";
+
 
 export const SubHeader = [
   {
@@ -22,7 +24,7 @@ export const SubHeader = [
     icon: FolderClock
   },
   {
-    name: 'Mua trang in',
+    name: 'Thanh toán',
     path: paths.BuyPage,
     icon: FilePlus
   }
@@ -64,7 +66,7 @@ export const navbar = [
     icon: FaPrint
   },
   {
-    name: "Mua trang in",
+    name: "Thanh toán",
     path: paths.BuyPage,
     icon: IoBagAdd
   },
@@ -74,3 +76,81 @@ export const navbar = [
     icon: MdContactSupport
   }
 ]
+
+export const queryKeys = {
+  documents: 'documents',
+  profile: 'profile',
+  printOrderHistory: 'printOrderHistory',
+  documentById: 'documentById',
+  listPrintOrders: 'listPrintOrders'
+}
+
+export const formatDate = (date: string) => {
+  const newDate = new Date(date);
+  return newDate.toLocaleString('vi-VN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+}
+
+export const formatFileSize = (size: number) => {
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+  return `${size.toFixed(2)} ${units[unitIndex]}`;
+}
+
+export const iconFiles = [
+  {
+    type: 'application/pdf',
+    icon: FaFilePdf,
+    color: 'text-red-500'
+  },
+  {
+    type: 'image/jpeg',
+    icon: FaFileImage,
+    color: 'text-green-500'
+  },
+  {
+    type: 'image/png',
+    icon: FaFileImage,
+    color: 'text-green-500'
+  },
+  {
+    type: 'application/msword',
+    icon: FaFileWord,
+    color: 'text-blue-500'
+  },
+  {
+    type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    icon: FaFileWord,
+    color: 'text-blue-500'
+  },
+  {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    icon: FaFileExcel,
+    color: 'text-yellow-500'
+  },
+  {
+    type: 'application/vnd.ms-excel',
+    icon: FaFileExcel,
+    color: 'text-yellow-500'
+  },
+  {
+    type: 'application/vnd.ms-powerpoint',
+    icon: FaFilePowerpoint,
+    color: 'text-purple-500'
+  }
+]
+
+export const localStorageKeys = {
+  documentId: 'documentId'
+}

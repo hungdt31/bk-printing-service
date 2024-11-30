@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { paths } from "@/utils/path";
 import { LucideProps } from "lucide-react";
 import { handleLogout } from "@/action/logout";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@/hooks/user";
 import { CircleHelp } from "lucide-react";
 import { SubHeader } from "@/utils/constant";
 import { useWindowWidth } from "@react-hook/window-size";

@@ -89,6 +89,8 @@ CREATE TABLE "Document" (
     "size" INTEGER NOT NULL DEFAULT 0,
     "url" VARCHAR(256) NOT NULL,
     "path" VARCHAR(256) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "Document_pkey" PRIMARY KEY ("document_id")
@@ -117,6 +119,15 @@ CREATE TABLE "Report" (
     CONSTRAINT "Report_pkey" PRIMARY KEY ("report_id")
 );
 
+-- CreateTable
+CREATE TABLE "Avatar" (
+    "user_id" INTEGER NOT NULL,
+    "url" VARCHAR(256) NOT NULL,
+    "path" VARCHAR(256) NOT NULL,
+
+    CONSTRAINT "Avatar_pkey" PRIMARY KEY ("user_id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
@@ -128,6 +139,12 @@ CREATE UNIQUE INDEX "PrintOrder_print_id_key" ON "PrintOrder"("print_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Document_path_key" ON "Document"("path");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Avatar_user_id_key" ON "Avatar"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Avatar_path_key" ON "Avatar"("path");
 
 -- AddForeignKey
 ALTER TABLE "PrintOrder" ADD CONSTRAINT "PrintOrder_document_id_fkey" FOREIGN KEY ("document_id") REFERENCES "Document"("document_id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -146,3 +163,6 @@ ALTER TABLE "Document" ADD CONSTRAINT "Document_user_id_fkey" FOREIGN KEY ("user
 
 -- AddForeignKey
 ALTER TABLE "PurchaseOrder" ADD CONSTRAINT "PurchaseOrder_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Avatar" ADD CONSTRAINT "Avatar_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;

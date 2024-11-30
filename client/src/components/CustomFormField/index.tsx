@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 // CustomField sẽ nhận thêm thuộc tính type cho Control
 interface CustomFieldProps<T extends FieldValues> {
@@ -24,8 +25,12 @@ interface CustomFieldProps<T extends FieldValues> {
   label: string;
   placeholder: string;
   description?: string;
-  type?: "email" | "password" | "text" | "textarea" | "select"; // Các loại bạn muốn
+  type?: "email" | "password" | "text" | "textarea" | "select" | "number"; // Các loại bạn muốn
   disabled?: boolean;
+  horizontal?: boolean;
+  options?: { value: string; label: string }[];
+  min?: number;
+  max?: number;
 }
 
 const CustomField = <T extends FieldValues>({
@@ -36,14 +41,18 @@ const CustomField = <T extends FieldValues>({
   description,
   type = "text",
   disabled,
+  horizontal = false,
+  options,
+  min = 0,
+  max = 10
 }: CustomFieldProps<T>) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
+        <FormItem className={cn(horizontal ? "flex items-center gap-2 justify-between" : "")}>
+          <FormLabel className={cn(horizontal ? "whitespace-nowrap" : "")}>{label}</FormLabel>
           <FormControl>
             {(() => {
               switch (type) {
@@ -76,18 +85,34 @@ const CustomField = <T extends FieldValues>({
                 case "select":
                   return (
                     <Select
-                      onValueChange={(value) => field.onChange(value)} // Use onValueChange to update react-hook-form
-                      value={field.value || "STUDENT"} // Default to "STUDENT" if no value is set
+                      disabled={disabled}
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="max-w-[180px]">
                         <SelectValue placeholder={placeholder} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="STUDENT">Sinh viên</SelectItem>
-                        <SelectItem value="LECTURER">Cán bộ/ Giảng viên</SelectItem>
+                        {options?.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
-                  )
+                  );
+                case "number":
+                  return (
+                    <Input
+                      type="number"
+                      placeholder={placeholder}
+                      {...field}
+                      min={min}
+                      max={max}
+                      className="max-w-[180px]"
+                      disabled={disabled}
+                    />
+                  );
                 default:
                   return (
                     <Input

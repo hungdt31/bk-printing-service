@@ -1,12 +1,19 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DashboardWrapper } from "@/components/DashboardWrapper"
+import { DataTable } from "@/components/DataTable"
+import { usePrintOrderHistory } from "@/hooks/printOrder"
+import { columns } from "@/pages/Dashboard/History/column"
+import { LoadingFullLayout } from "@/components/LoadingFullLayout"
+import ErrorPage from "@/components/Error"
 
 export const HistoryLog = () => {
+  const { data, isPending, isError } = usePrintOrderHistory();
+  if (isPending) return <LoadingFullLayout/>;
+  if (isError) return <ErrorPage/>;
   return (
-    <Card className="w-full m-3">
-      <CardHeader>
-        <CardTitle className="font-bold text-xl">Lịch sử in</CardTitle>
-        <CardDescription>Nhật ký in ấn của sinh viên</CardDescription>
-      </CardHeader>
-    </Card>
+    <DashboardWrapper
+      title="Nhật ký in ấn của người dùng"
+    >
+      <DataTable columns={columns} data={data} />
+    </DashboardWrapper>
   )
 }

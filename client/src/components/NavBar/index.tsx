@@ -13,7 +13,7 @@ export default function NavBar() {
       {
         navbar.map((item, index) => (
           <Link to={item.path} key={index} className={cn(
-            item.path === window.location.pathname ? "text-primary bg-secondary border-r-4 border-primary" : "",
+            window.location.pathname.includes(item.path) ? "text-primary bg-secondary border-r-4 border-primary" : "",
             "p-3 font-semibold flex items-center gap-3"
           )}>
             <item.icon/> {item.name}

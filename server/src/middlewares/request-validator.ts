@@ -15,7 +15,7 @@ class RequestValidator {
       const result = this.schema.safeParse(req.body);
       if (!result.success) {
         const messages = result.error.issues.map(
-          (issue) => `${issue.path.join(".")} ${issue.message.toLowerCase()}`
+          (issue) => `${issue.path.join(".")} ${issue.message}`
         );
         next(createHttpError(StatusCodes.BAD_REQUEST, messages.join(", ")));
         return;

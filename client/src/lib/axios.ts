@@ -1,10 +1,11 @@
 // Author: TrungQuanDev: https://youtube.com/@trungquandev
 import axios from "axios";
 // import toast from "react-hot-toast";
-// import { toast } from "react-toastify";
+// import { toast } from "react-hot-toast";
 // Khởi tạo đối tượng Axios (authorizedAxiosInstance) mục đích để custom và cấu hình chung cho dự án.
 import { refreshToken } from "@/action/refreshtoken";
 import { handleLogout } from "@/action/logout";
+// import { toast } from "react-hot-toast";
 const authorizedAxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACK_END_URL,
 });
@@ -46,7 +47,7 @@ authorizedAxiosInstance.interceptors.response.use(
     const originalRequest = error.config;
     // console.log("Original request: ", originalRequest);
     if (
-      error.response?.status === 404 &&
+      error.response?.status === 402 &&
       // !originalRequest._retry
       originalRequest
     ) {
@@ -76,9 +77,10 @@ authorizedAxiosInstance.interceptors.response.use(
         return authorizedAxiosInstance(originalRequest);
       });
     }
-    if (error.response?.status !== 404) {
+    if (error.response?.status !== 402) {
       // Nếu nhận 401 - Unauthorized thì cần logout người dùng ra khỏi hệ thống
       console.clear();
+      // toast.error(error.response?.data?.message);
       console.log(
         `${error.response?.status} - ${error.response?.data?.message}`,
       );

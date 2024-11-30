@@ -9,8 +9,11 @@
     "image/png",
     "image/jpeg",
     "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
   ],
   "MAX_FILE_SIZE": 15728640,
-  "UPDATED_AT": "2024-11-20T07:07:40.159Z"
+  "UPDATED_AT": "2024-11-20T07:07:40.159Z",
+  "PRICE_PER_A4": 500
 }

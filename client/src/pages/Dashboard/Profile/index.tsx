@@ -1,18 +1,20 @@
 // import { useAppSelector } from "@/hooks";
 // import { RootState } from "@/hooks/store";
 
+import ErrorPage from "@/components/Error";
+import { LoadingFullLayout } from "@/components/LoadingFullLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@/hooks/user";
 
 export const Profile = () => {
   // const { data: profile } = useAppSelector((state: RootState) => state.profile);
   const { data, isError, isFetching } = useProfile();
   if (isFetching) {
-    return <div>Loading...</div>;
+    return <LoadingFullLayout/>;
   }
   if (isError) {
-    return <div>Error fetching profile</div>;
+    return <ErrorPage/>;
   }
   return (
     <Card className="w-full m-3">

@@ -16,7 +16,8 @@ export interface ProfileResponse {
     id: number;
     username: string;
     email: string;
-    role: string
+    role: string;
+    balance: number;
   };
   message: string;
 }

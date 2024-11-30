@@ -4,8 +4,10 @@ import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { REDIRECT_IF_AUTHENTICATED } from "@/utils/path";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@/hooks/user";
 import { paths } from "@/utils/path";
+import { LoadingFullLayout } from "@/components/LoadingFullLayout";
+import ErrorPage from "@/components/Error";
 
 export const AuthLayout = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -30,6 +32,14 @@ export const AuthLayout = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [data, isError, isLoading, navigate]);
+
+  if (isLoading) {
+    return <LoadingFullLayout />;
+  }
+
+  if (isError) {
+    return <ErrorPage />;
+  }
 
   return (
     <div

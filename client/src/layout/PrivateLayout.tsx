@@ -4,11 +4,13 @@ import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { REDIRECT_IF_NOT_AUTHENTICATED } from "@/utils/path";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile } from "@/hooks/user";
 import Footer from "@/components/Footer";
 import { useWindowWidth } from "@react-hook/window-size";
 import NavBar from "@/components/NavBar";
 import UserBar from "@/components/NavBar/user-bar";
+import ErrorPage from "@/components/Error";
+import { LoadingFullLayout } from "@/components/LoadingFullLayout";
 
 export const PrivateLayout = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -37,7 +39,11 @@ export const PrivateLayout = () => {
 
   // Nếu dữ liệu vẫn đang tải, có thể hiển thị loading spinner
   if (isLoading) {
-    return <div>Loading...</div>; // Hoặc là một spinner
+    return <LoadingFullLayout/>; // Hoặc là một spinner
+  }
+
+  if (isError) {
+    return <ErrorPage />;
   }
 
   if (width >= 768) {

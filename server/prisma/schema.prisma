@@ -10,12 +10,12 @@ generator client {
 
 model User {
   user_id           Int          @id @default(autoincrement())
-  username          String?      @unique @db.VarChar(32) // Optional for customers
+  username          String?      @db.VarChar(32) // Optional for customers
   password          String       @db.VarChar(128)
-  email             String       @db.VarChar(32)
+  email             String       @unique @db.VarChar(32)
   phone             String?      @db.VarChar(16) // Optional for customers
   dob               DateTime?    // Optional for customers
-  balance           Int?         @default(0) // Optional for SPSO
+  balance           Int         @default(0) // Optional for SPSO
   created_at        DateTime     @default(now())
   last_used         DateTime     @default(now())  @updatedAt
   role              UserRole     @default(STUDENT) // Distinguish user roles
@@ -23,6 +23,7 @@ model User {
   printOrders       PrintOrder[]    @relation("UserPrintOrders")
   purchaseOrders    PurchaseOrder[] @relation("UserPurchaseOrders")
   documents         Document[]      @relation("UserDocuments")
+  avatar            Avatar?         @relation("UserAvatar")
 }
 
 model Printer {
@@ -52,8 +53,8 @@ model PrintOrder {
   time_start            DateTime      @default(now()) // Thời điểm bắt đầu in
   time_end              DateTime?                  // Thời điểm hoàn thành in
   status                PrintStatus   @default(PENDING) // Trạng thái lệnh in
-  pages_to_be_printed   String?       @db.VarChar(64) // Ví dụ: "1-3, 5, 7-9"
-  num_pages_printed     Int?                          // Số trang đã in thực tế
+  pages_to_be_printed   Int[]         @default([]) // Mảng các số trang cần in    
+  num_pages_consumed    Int?                          // Số trang tiêu tốn cho tài khoản
 
   document_id           Int?           // Liên kết với Document
   document              Document?     @relation("DocumentPrintOrders", fields: [document_id], references: [document_id], onDelete: SetNull, onUpdate: Cascade)
@@ -64,42 +65,72 @@ model PrintOrder {
   printer_id            Int
   printer               Printer       @relation("PrintOrderDocuments", fields: [printer_id], references: [printer_id])
 
-  report_id             Int?
-  report                Report?       @relation("PrintOrderReports", fields: [report_id], references: [report_id])
+  reports               PrintOrderReport[]  @relation("PrintOrderToReport")
 }
 
 
 model Document {
   document_id     Int           @id @default(autoincrement())
-  filename        String        @db.VarChar(64)
+  filename        String        @db.VarChar(256)
   mimetype        String        @db.VarChar(64) // Ví dụ: pdf, docx
   page_count      String        @default("unknown")
   size            Int           @default(0)    // Đơn vị: KB hoặc MB
   url             String        @db.VarChar(256) // Đường dẫn file (Cloud hoặc local)
   path            String        @unique @db.VarChar(256) // Đường dẫn file trong bucket
+
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now()) @updatedAt
   user_id         Int
   user            User          @relation("UserDocuments", fields: [user_id], references: [user_id])
   printOrders     PrintOrder[]  @relation("DocumentPrintOrders")
 }
 
 model PurchaseOrder {
-  purchase_id  Int        @id @default(autoincrement())
-  time         DateTime   @default(now())
-  amount       Int        @default(0)
-  price        Float      @default(0)
-  status       PurchaseStatus @default(UNPAID)
+  purchase_id     Int            @id @default(autoincrement())
+  
+  amount          Int            @default(0)
+  price           Float          @default(0)
+  status          PurchaseStatus @default(UNPAID)
 
-  user         User?      @relation("UserPurchaseOrders", fields: [user_id], references: [user_id])
-  user_id      Int?
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @default(now()) @updatedAt
+
+  user            User?          @relation("UserPurchaseOrders", fields: [user_id], references: [user_id])
+  user_id         Int?
 }
 
 model Report {
   report_id     Int           @id @default(autoincrement())
   type          ReportType
-  month         Int
-  year          Int
+  month         Int?
+  year          Int?
   total_pages   Int
-  printOrders   PrintOrder[]  @relation("PrintOrderReports")
+  
+  printOrders   PrintOrderReport[]  @relation("ReportToPrintOrder")
+}
+
+model PrintOrderReport {
+  print_id      Int
+  report_id     Int
+  
+  printOrder    PrintOrder    @relation("PrintOrderToReport", fields: [print_id], references: [print_id])
+  report        Report        @relation("ReportToPrintOrder", fields: [report_id], references: [report_id])
+
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt @default(now())
+
+  @@id([print_id, report_id])
+  @@map("print_order_reports")
+}
+
+model Avatar {
+  user_id       Int           @unique
+  user          User          @relation("UserAvatar", fields: [user_id], references: [user_id])
+
+  url           String        @db.VarChar(256)
+  path          String        @unique @db.VarChar(256)
+
+  @@id([user_id])
 }
 
 enum UserRole {
@@ -147,6 +178,7 @@ enum PrintStatus {
   PROGRESS
   FAILED
   PENDING
+  CANCELLED
 }
 
 enum PurchaseStatus {
