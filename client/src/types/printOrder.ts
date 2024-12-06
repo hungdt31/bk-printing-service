@@ -65,3 +65,39 @@ export interface MultiplePaymentResponse {
   };
   message: string;
 }
+
+export interface PrintOrderByAdmin {
+  print_id: number;
+  side: string;
+  page_size: string;
+  orientation: string;
+  pages_per_sheet: number;
+  scale: number;
+  time_start: string; // ISO date string
+  time_end: string;   // ISO date string
+  status: string;
+  pages_to_be_printed: number[];
+  num_pages_consumed: number;
+  document_id: number;
+  user_id: number;
+  printer_id: number;
+  user: {
+    user_id: number;
+    username: string;
+    email: string;
+    avatar: {
+      url: string
+    },
+    document: {
+      filename: string,
+      mimitype: string,
+      size: number
+    }
+  };
+}
+
+export interface PrintOrdersByAdminResponse {
+  data: PrintOrderByAdmin[];
+  message: string;
+}
+

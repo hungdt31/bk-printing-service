@@ -21,7 +21,12 @@ export const printOrderExamination = async (
     },
   });
   if (!existDocument || !existPrinter) {
-    throw new Error("Document or printer not found!");
+    return next(
+      createHttpError(
+        StatusCodes.BAD_REQUEST,
+        "Document or printer not found!",
+      ),
+    );
   }
   // check document is belong to user
   if (existDocument.user_id !== req.jwtDecoded?.id) {

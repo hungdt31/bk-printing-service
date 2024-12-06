@@ -8,13 +8,12 @@ import { useState } from "react";
 import { CardWrapper } from "../CardWrapper";
 import CustomField from "@/components/CustomFormField";
 import { useNavigate } from "react-router-dom";
-import { hanldeLogin } from "@/action/login";
+import { handleLogin } from "@/action/login";
 import { toast } from "react-hot-toast";
 import { DEFAULT_DIRECT_AFTER_LOGIN } from "@/utils/path";
-import { useProfile } from "@/hooks/user";
+import { queryClient } from "@/hooks/queryProvider";
 
 export function LoginForm() {
-  const { refetch } = useProfile();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -27,9 +26,9 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof LoginSchema>) {
     setIsPending(true);
-    hanldeLogin(values).then(async (result) => {
+    handleLogin(values).then(async (result) => {
       if (result.data) {
-        await refetch();
+        queryClient.clear();
         toast.success(result.message);
         navigate(DEFAULT_DIRECT_AFTER_LOGIN);
       } else {

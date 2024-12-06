@@ -1,4 +1,3 @@
-import { paths } from '@/utils/path'
 import { Link } from 'react-router-dom'
 import {
   useWindowWidth,

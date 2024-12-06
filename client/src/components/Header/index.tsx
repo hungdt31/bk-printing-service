@@ -18,7 +18,7 @@ export default function Header() {
       <Options />
       <>
         {isError ? (
-          <Link to={paths.LoginPage}>
+          <Link to={paths.Login}>
             <Button>Đăng nhập</Button>
           </Link>
         ) : (

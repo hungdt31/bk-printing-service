@@ -14,7 +14,7 @@ import { paths } from "@/utils/path";
 import { LucideProps } from "lucide-react";
 import { handleLogout } from "@/action/logout";
 import { useProfile } from "@/hooks/user";
-import { CircleHelp } from "lucide-react";
+import { FilePlus } from "lucide-react";
 import { SubHeader } from "@/utils/constant";
 import { useWindowWidth } from "@react-hook/window-size";
 import { cn } from "@/lib/utils";
@@ -81,9 +81,9 @@ export function DropdownMenuDemo() {
             label="Thông tin cá nhân"
           />
           <DropdownMenuLinkItem
-            to={paths.Support}
-            icon={CircleHelp}
-            label="Hỗ trợ"
+            to={paths.Purchase}
+            icon={FilePlus}
+            label="Mua trang in"
           />
         </DropdownMenuGroup>
         <div className={
@@ -105,7 +105,7 @@ export function DropdownMenuDemo() {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuLinkItem
-          to={paths.SignupPage}
+          to={paths.Signup}
           icon={LogOut}
           label="Đăng xuất"
           color="red"

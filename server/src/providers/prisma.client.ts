@@ -97,6 +97,15 @@ async function initializeData() {
             loc_building: "H2",
             loc_room: "405",
           },
+          {
+            name: "Printer 3",
+            brand: "EPSON",
+            model: "L3150",
+            description: "Small printer for school use.",
+            loc_campus: "TWO",
+            loc_building: "H3",
+            loc_room: "301",
+          }
         ],
       });
       console.log("Default printers have been added.");

@@ -8,15 +8,15 @@ import { PrintOrderSchema } from "@/schemas/PrintOrderSchema";
 import CustomField from "@/components/CustomFormField";
 import { getPrinters } from "@/data/printer";
 import { Printer } from "@/types/printer";
-import { RotateCcw, ShoppingCart } from "lucide-react";
+import { RotateCcw, ShoppingCart, MessageCircleWarning } from "lucide-react";
 import { paths } from "@/utils/path";
 import { Link } from "react-router-dom";
-import { MessageCircleWarning } from "lucide-react";
 import { createOrder } from "@/action/printOrder";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useListPrintOrders } from "@/hooks/printOrder";
-import OrderCard from "../OrderCard";
+import OrderCard from "@/components/OrderCard";
+import { localStorageKeys } from "@/utils/constant";
 
 export const SettingsForm = ({
   documentId,
@@ -39,7 +39,8 @@ export const SettingsForm = ({
     resolver: zodResolver(PrintOrderSchema),
     defaultValues: async () => {
       setIsPending(true);
-      const printerList = await getPrinters();
+      let printerList = await getPrinters();
+      printerList = printerList.filter(item => item.status === 'RUNNING');
       setPrinters(printerList);
       setSelectedPages(initialPages);
       setIsPending(false);
@@ -85,7 +86,7 @@ export const SettingsForm = ({
     if (result.data) {
       await refetch();
       toast.success(result.message);
-      navigate(paths.BuyPage);
+      navigate(paths.Order);
     } else {
       toast.error(result.message);
     }
@@ -223,8 +224,14 @@ export const SettingsForm = ({
             <Button className="text-sm font-semibold" variant={"secondary"}>Số trang tiêu tốn: {consumedPages}</Button>
           </div>
           {consumedPages > balance && (
-            <Link to={paths.BuyPage}>
-              <Button variant={"link"} className="text-yellow-500">
+            <Link to={paths.Purchase}>
+              <Button
+                variant={"link"}
+                className="text-yellow-500"
+                onClick={() => {
+                  window.localStorage.setItem(localStorageKeys.pageAdded, (consumedPages - balance).toString());
+                }}
+              >
                 <MessageCircleWarning /> Cần mua thêm {consumedPages - balance} trang.
               </Button>
             </Link>

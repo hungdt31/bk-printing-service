@@ -1,134 +1,62 @@
-import UploadCard from '@/components/UploadCard'
-import { DashboardWrapper } from '@/components/DashboardWrapper'
-import { useMyDocuments } from '@/hooks/document'
-import { Document } from '@/types/document'
-import FileCard from '@/components/FileCard'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { useState } from 'react'
-import { Trash2, X } from 'lucide-react'
-import { Checkbox } from "@/components/ui/checkbox"
-import { handleDeleteDocument } from '@/action/document'
-import { toast } from 'react-toastify'
-import { useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '@/utils/constant'
-import { cn } from '@/lib/utils'
-import { DialogTitle } from '@radix-ui/react-dialog'
-import { ArrowUpFromLine } from 'lucide-react'
-import { LoadingFullLayout } from '@/components/LoadingFullLayout'
-import ErrorPage from '@/components/Error'
+import { DashboardWrapper } from "@/components/DashboardWrapper"
+import { DataTable } from "@/components/DataTable";
+import { useListPrintOrders, usePrintOrderHistory } from "@/hooks/printOrder"
+import { createColumns } from "@/pages/Dashboard/Order/column";
+import { useProfile } from "@/hooks/user";
+import { paymentOrder } from "@/action/printOrder";
+import { toast } from "react-hot-toast";
+import { useState } from "react";
+import { Link } from "react-router-dom"
+import { paths } from "@/utils/path"
+import { CirclePlus } from "lucide-react"
+import { Button } from "@/components/ui/button";
 
 export const OrderPage = () => {
-  const { data, isPending, isError } = useMyDocuments();
-  const [isSelecting, setIsSelecting] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const queryClient = useQueryClient();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const handleToggleSelect = async () => {
-    if (isSelecting) {
-      setIsDeleting(true);
-      const result = await handleDeleteDocument(selectedIds);
-      if (result.data) {
-        toast.success(result.message);
-        queryClient.invalidateQueries({ queryKey: [queryKeys.documents] });
-      } else {
-        toast.error(result.message);
-      }
-      setIsDeleting(false);
-    };
-    setIsSelecting(!isSelecting);
-    setSelectedIds([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { data: listPrintOrders, refetch: refetchListPrintOders } = useListPrintOrders();
+  const { data: profile, refetch: refetchProfile } = useProfile();
+  const { refetch: refetchPrintOrderHistory } = usePrintOrderHistory();
+  const columns = createColumns(refetchListPrintOders, refetchPrintOrderHistory);
+  const handlePayment = async (selectedIds: number[]) => {
+    // Handle payment logic here
+    setIsLoading(true);
+    const result = await paymentOrder(selectedIds);
+    if (result.data) {
+      await refetchListPrintOders();
+      await refetchProfile();
+      await refetchPrintOrderHistory();
+      toast.success(result.message)
+    } else {
+      toast.error(result.message)
+    }
+    setIsLoading(false);
+    // console.log("Processing payment for IDs:", selectedIds)
   };
-
-  const handleSelectDocument = (documentId: string) => {
-    setSelectedIds(prev =>
-      prev.includes(documentId)
-        ? prev.filter(id => id !== documentId)
-        : [...prev, documentId]
-    );
-  };
-
-  if (isPending) return <LoadingFullLayout/>;
-  if (isError) return <ErrorPage/>;
-
   return (
-    <DashboardWrapper title="Danh sách tài liệu">
-      <>
-        <div className='flex items-center gap-3 py-5'>
-          {!isSelecting && (
-            <Dialog>
-              <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-white px-6 py-5"
-              >
-                <ArrowUpFromLine /> <p className="text-sm">Tải lên tài liệu</p>
-              </Button>
-              </DialogTrigger>
-              <DialogTitle></DialogTitle>
-              <DialogContent>
-                <UploadCard />
-              </DialogContent>
-            </Dialog>
-          )}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="destructive"
-              onClick={handleToggleSelect}
-              className="flex items-center gap-2 text-destructive border-destructive bg-white hover:bg-destructive hover:text-white border-2 px-6 py-5"
-              disabled={isDeleting}
-            >
-              {isSelecting ? (
-                <>
-                  <Trash2 className="h-4 w-4" />
-                  <span>Xóa ({selectedIds.length})</span>
-                </>
-              ) : (
-                "Xóa tài liệu"
-              )}
-            </Button>
-            {isSelecting && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsSelecting(false)
-                  setSelectedIds([])
-                }}
-                disabled={isDeleting}
-                className="flex items-center gap-2"
-              >
-                <X className="h-4 w-4" />
-                <span>Thoát</span>
-              </Button>
-            )}
+    <DashboardWrapper title="Thanh toán đơn hàng">
+      <DataTable
+        columns={columns}
+        data={listPrintOrders || []}
+        onAction={handlePayment}
+        actionLabel="Thanh toán"
+        selectBehavior
+        isLoading={isLoading}
+        balance={profile?.balance}
+      >
+        <div className="flex items-center mb-5 gap-2">
+          <div
+            className="text-primary px-6 py-3 flex items-center bg-gray-100 rounded-lg"
+          >
+            <p className="text-sm pr-3">Số trang khả dụng</p>
+            <span className="border-l-2 border-primary pl-2">{profile?.balance}</span>
           </div>
+          <Link to={paths.Purchase}>
+            <Button className="rounded-full px-6 py-5 text-green-500 border-green-500 hover:bg-green-500 hover:text-white" variant="outline">
+              <CirclePlus /> Mua thêm trang in
+            </Button>
+          </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {data.map((item: Document) => (
-            <div key={item.document_id} className={cn("relative", isDeleting && "opacity-50")}>
-              {isSelecting && (
-                <div className="absolute top-[20%] -left-2 z-10">
-                  <Checkbox
-                    disabled={isDeleting}
-                    checked={selectedIds.includes(item.document_id)}
-                    onCheckedChange={() => handleSelectDocument(item.document_id)}
-                    className="h-5 w-5 border-2 bg-white border-primary/50 rounded-full"
-                  />
-                </div>
-              )}
-              <div className={`${selectedIds.includes(item.document_id) ? 'ring-2 ring-primary rounded-lg' : ''
-                }`}>
-                <FileCard document={item} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </>
+      </DataTable>
     </DashboardWrapper>
   )
 }

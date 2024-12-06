@@ -13,7 +13,7 @@ export const OrderSettings = () => {
   if (isPending) return <LoadingFullLayout/>;
   if (isError) return <ErrorPage/>;
   return(
-    <DashboardWrapper title="Thiết lập thông số bản in" hrefBack={paths.Order}>
+    <DashboardWrapper title="Thiết lập thông số bản in" hrefBack={paths.Document}>
       {data ? (
         <div className="h-full grid sm:grid-cols-2 w-full gap-3 grid-cols-1">
           <div className="overflow-hidden space-y-2">

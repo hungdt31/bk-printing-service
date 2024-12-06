@@ -40,12 +40,14 @@ export default function OrderCard({
     setIsLoading(true);
     order.status = "PROGRESS";
     order.printer_id = parseInt(order.printer_id as unknown as string);
+    order.scale = parseInt(order.scale as unknown as string);
+    order.pages_per_sheet = parseInt(order.pages_per_sheet as unknown as string);
     // console.log(order);
     const result = await createOrder(order);
     if (result.data) {
       await refetchPrintOrderHistory();
       await refetchProfile();
-      navigate(paths.Order);
+      navigate(paths.History);
       toast.success(result.message);
     } else {
       toast.error(result.message);

@@ -15,3 +15,21 @@ export const PrintOrderSchema = z.object({
   printer_id: z.coerce.number().int(),
   document_id: z.coerce.number().int(),
 });
+
+export const searchPrintOrder = z.object({
+  time_start: z.coerce.date(),
+  time_end: z.coerce.date(),
+  name: z.string().optional(),
+  status: z.enum(['PENDING', 'SUCCESS', 'CANCELLED', 'ALL']).optional(),
+  printer_id: z.coerce.number().int().optional(),
+}).refine(
+  (data) => {
+    if (data.time_start && data.time_end) {
+      return data.time_start < data.time_end;
+    }
+    return true;
+  },
+  {
+    message: 'time_start must be less than time_end',
+  }
+);

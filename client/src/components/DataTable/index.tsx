@@ -19,8 +19,9 @@ import {
 import { Button } from "@/components/ui/button"
 import React from "react"
 import { PrintOrder } from "@/types/printOrder"
-import { CirclePlus } from "lucide-react"
 import { LoadingFullLayout } from "../LoadingFullLayout"
+
+import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -30,6 +31,8 @@ interface DataTableProps<TData, TValue> {
   selectBehavior?: boolean
   balance?: number
   isLoading?: boolean
+  variant?: 'main' | 'sub' | 'none'
+  children?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
@@ -40,6 +43,8 @@ export function DataTable<TData, TValue>({
   selectBehavior = false,
   balance = 0,
   isLoading = false,
+  variant = 'main',
+  children,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const table = useReactTable({
@@ -62,26 +67,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      {balance !== 0 && <div className="flex items-center mb-5 gap-2">
-        <Button
-          variant="outline"
-          className="border-primary text-primary hover:bg-primary hover:text-white px-6 py-5"
-        >
-          <p className="text-sm">Số trang khả dụng</p>
-          <span className="border-l-2 border-primary pl-2">{balance}</span>
-        </Button>
-        <Button className="rounded-full px-6 py-5 text-green-500 border-green-500 hover:bg-green-500 hover:text-white" variant="outline">
-          <CirclePlus /> Mua thêm {totalPagesConsumed > balance ? totalPagesConsumed - balance : null} trang in
-        </Button>
-      </div>}
-      <div className="border rounded-lg">
-        <Table>
+      {children}
+      <div className={cn("border-2 rounded-lg shadow-sm", variant == 'main'
+        ? "border-primary/80" :
+        variant == 'sub' ? "border-gray-500" : '')}>
+        <Table >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="font-bold text-primary">
+                    <TableHead key={header.id} className={cn("font-bold py-4", variant == 'main' ? "text-primary border-b-primary border-b-2" :
+                      variant == 'sub' ? "text-gray-500 border-b-gray-500 border-b-2" : '')}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

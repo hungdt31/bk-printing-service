@@ -9,7 +9,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import cron from "node-cron";
 import { prisma } from "./providers/prisma.client";
-import { SettingsService } from "./providers/settings.service";
+import { systemProvider } from "./providers/system.provider";
 
 class App {
   public app: express.Application;
@@ -48,7 +48,7 @@ class App {
 
   public listen() {
     this.app.listen(this.port, async () => {
-      const settings = await SettingsService.readSettings();
+      const settings = systemProvider.getConfig();
       cron.schedule(settings.DATE_TO_UPDATE, async () => {
         try {
           // add value of default balance to balance column of all users

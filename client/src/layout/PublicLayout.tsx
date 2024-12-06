@@ -4,12 +4,26 @@ import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Footer from "@/components/Footer";
+import { useProfile } from "@/hooks/user";
+import { useNavigate } from "react-router-dom";
+import { role } from "@/utils/constant";
+import { paths } from "@/utils/path";
+
 export const PublicLayout = () => {
   const [scrollY, setScrollY] = useState(0);
+  const navigate = useNavigate();
+  const { data: profile, isLoading, isError } = useProfile();
 
   const handleScroll = () => {
     setScrollY(window.scrollY);
   };
+
+  useEffect(() => {
+    // Chỉ redirect khi có profile và role là ADMIN
+    if (!isLoading && !isError && profile && profile.role === role.ADMIN) {
+      navigate(paths.Admin, { replace: true });
+    }
+  }, [profile, isLoading, isError, navigate]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);

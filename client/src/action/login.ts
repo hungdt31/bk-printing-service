@@ -4,7 +4,7 @@ import { z } from "zod";
 import { type LoginResponse } from "@/types/user";
 import { AxiosError } from "axios";
 
-export const hanldeLogin = async (values: z.infer<typeof LoginSchema>) => {
+export const handleLogin = async (values: z.infer<typeof LoginSchema>) => {
   const input = LoginSchema.safeParse(values);
   if (input.success) {
     try {
@@ -13,7 +13,7 @@ export const hanldeLogin = async (values: z.infer<typeof LoginSchema>) => {
         values,
       );
       return {
-        data: result.data,
+        data: result.data.data.customerInfo,
         message: result.data.message,
       };
     } catch (error) {

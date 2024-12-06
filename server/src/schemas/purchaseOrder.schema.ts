@@ -1,10 +1,11 @@
 import { z } from "zod";
-import { PurchaseStatus } from "@prisma/client";
+import { PaymentMethod, PurchaseStatus } from "@prisma/client";
 
 export const PurchaseOrderSchema = z.object({
   amount: z.number().int().min(1, {
     message: "Amount must be greater than 0",
   }),
+  method: z.nativeEnum(PaymentMethod),
 });
 
 export const UpdatePurchaseOrderSchema = z.object({

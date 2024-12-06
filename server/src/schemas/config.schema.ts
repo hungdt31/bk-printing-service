@@ -33,12 +33,17 @@ export const UpdateSettingsSchema = z.object({
       message: "Invalid cron expression format",
     })
     .optional(),
-  PERMITTED_FILE_TYPES: z.record(MimeTypes, FileTypeEntry).optional(),
+  PERMITTED_FILE_TYPES: 
+    z.array(z.string()).optional(),
+  // z.record(MimeTypes, FileTypeEntry).optional(),
   MAX_FILE_SIZE: z
     .number()
     .int()
     .positive({
       message: "Max file size must be a positive number",
+    })
+    .min(1024, {
+      message: "Max file size must be at least 1KB",
     })
     .optional(),
 });

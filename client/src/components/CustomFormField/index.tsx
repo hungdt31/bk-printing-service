@@ -25,12 +25,18 @@ interface CustomFieldProps<T extends FieldValues> {
   label: string;
   placeholder: string;
   description?: string;
-  type?: "email" | "password" | "text" | "textarea" | "select" | "number"; // Các loại bạn muốn
+  type?: "email" | "password" | "text" | "textarea" | "select" | "number" | "radio" | "date"; // Các loại bạn muốn
   disabled?: boolean;
   horizontal?: boolean;
   options?: { value: string; label: string }[];
   min?: number;
   max?: number;
+  step?: number;
+  labelPosition?: 'before' | 'after';
+  className?: string;
+  labelClassName?: string;
+  inputClassName?: string;
+  radioValue?: string;
 }
 
 const CustomField = <T extends FieldValues>({
@@ -44,15 +50,27 @@ const CustomField = <T extends FieldValues>({
   horizontal = false,
   options,
   min = 0,
-  max = 10
+  max = 10,
+  labelPosition = 'before',
+  className = "justify-between",
+  labelClassName = "",
+  radioValue,
+  inputClassName = "",
+  step = 0.1,
 }: CustomFieldProps<T>) => {
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn(horizontal ? "flex items-center gap-2 justify-between" : "")}>
-          <FormLabel className={cn(horizontal ? "whitespace-nowrap" : "")}>{label}</FormLabel>
+        <FormItem className={cn(
+          horizontal ? "flex items-center gap-2" : "",
+          className
+        )}>
+          <FormLabel className={cn(horizontal ? "whitespace-nowrap" : "",
+            horizontal && labelPosition === 'after' ? "order-last" : "",
+            labelClassName,
+          )}>{label}</FormLabel>
           <FormControl>
             {(() => {
               switch (type) {
@@ -63,6 +81,7 @@ const CustomField = <T extends FieldValues>({
                       placeholder={placeholder}
                       {...field}
                       disabled={disabled}
+                      className={inputClassName}
                     />
                   );
                 case "password":
@@ -72,6 +91,7 @@ const CustomField = <T extends FieldValues>({
                       placeholder={placeholder}
                       {...field}
                       disabled={disabled}
+                      className={inputClassName}
                     />
                   );
                 case "textarea":
@@ -80,6 +100,7 @@ const CustomField = <T extends FieldValues>({
                       placeholder={placeholder}
                       {...field}
                       disabled={disabled}
+                      className={inputClassName}
                     />
                   );
                 case "select":
@@ -89,7 +110,7 @@ const CustomField = <T extends FieldValues>({
                       onValueChange={(value) => field.onChange(value)}
                       value={field.value}
                     >
-                      <SelectTrigger className="max-w-[180px]">
+                      <SelectTrigger className={cn("max-w-[180px]", inputClassName)}>
                         <SelectValue placeholder={placeholder} />
                       </SelectTrigger>
                       <SelectContent>
@@ -107,9 +128,37 @@ const CustomField = <T extends FieldValues>({
                       type="number"
                       placeholder={placeholder}
                       {...field}
+                      step={step}
                       min={min}
                       max={max}
-                      className="max-w-[180px]"
+                      className={
+                        cn(
+                          inputClassName ? inputClassName : "max-w-[180px]"
+                        )
+                      }
+                      disabled={disabled}
+                    />
+                  );
+                case "radio":
+                  return (
+                    <Input
+                      type="radio"
+                      {...field}
+                      className="w-4 h-4"
+                      placeholder={placeholder}
+                      disabled={disabled}
+                      value={radioValue}
+                      checked={field.value === radioValue}
+                      onChange={(e) => field.onChange(e.target.value)}
+                    />
+                  )
+                case "date":
+                  return (
+                    <Input
+                      type="date"
+                      placeholder={placeholder}
+                      {...field}
+                      className={inputClassName}
                       disabled={disabled}
                     />
                   );
@@ -118,7 +167,9 @@ const CustomField = <T extends FieldValues>({
                     <Input
                       type="text"
                       placeholder={placeholder}
+                      defaultValue={control._defaultValues[name]}
                       {...field}
+                      className={inputClassName}
                       disabled={disabled}
                     />
                   );

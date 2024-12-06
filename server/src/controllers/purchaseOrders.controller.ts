@@ -10,6 +10,7 @@ import { PurchaseOrderSchema } from "../schemas/purchaseOrder.schema";
 import { ROLE } from "../utils/constant";
 import createHttpError from "http-errors";
 import { UpdatePurchaseOrderSchema } from "../schemas/purchaseOrder.schema";
+import aqp from 'api-query-params';
 
 export default class PurchaseOrdersController extends BaseController {
   public path = "/purchase-orders";
@@ -22,7 +23,8 @@ export default class PurchaseOrdersController extends BaseController {
   }
 
   public initializeRoutes(): void {
-    this.router.get(this.path, this.listPurchaseOrders);
+    this.router.get(`${this.path}`, this.getListPurchaseOrders);
+    this.router.get(`${this.path}/me`, this.listPurchaseOrders);
     this.router.get(`${this.path}/:id`, this.getPurchaseOrderByUserId);
     this.router.post(
       this.path,
@@ -51,12 +53,13 @@ export default class PurchaseOrdersController extends BaseController {
           ),
         );
       }
-      const { amount } = req.body;
+      const { amount, method } = req.body;
       const pricePerA4 = this.systemProviderInstance.PRICE_PER_A4;
       const totalPrice = amount * pricePerA4;
       const purchaseOrder = await prisma.purchaseOrder.create({
         data: {
           amount,
+          method,
           price: totalPrice,
           user_id: req.jwtDecoded?.id,
         },
@@ -142,4 +145,39 @@ export default class PurchaseOrdersController extends BaseController {
       });
     }
   );
+
+  private getListPurchaseOrders = expressAsyncHandler(
+  async (
+    req: express.Request, res: express.Response, next: express.NextFunction
+  ) => {
+    const { filter, skip, limit, sort, projection, population } = aqp(req.query);
+    // set value of entity of sort from 1 to decrease and -1 to increase
+    const sortValue = sort ? Object.keys(sort).reduce((acc, key) => {
+      acc[key] = sort[key] === 1 ? 'asc' : 'desc';
+      return acc;
+    }, {} as Record<string, 'asc' | 'desc'>) : undefined;
+    const purchaseOrders = await prisma.purchaseOrder.findMany({
+      where: filter,
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            username: true,
+            email: true,
+            avatar: {
+              select: {
+                url: true,
+              }
+            }
+          }
+        }
+      },
+      orderBy: sortValue,
+    });
+    res.status(StatusCodes.OK).json({
+      message: "Purchase orders fetched successfully",
+      data: purchaseOrders,
+    })
+  })
 }

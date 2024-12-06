@@ -1,10 +1,11 @@
+import { time } from "console";
 import { z } from "zod";
 
 // Enum cho Campus
 const CampusEnum = z.enum(["ONE", "TWO", "THREE"]); // Thêm các giá trị cụ thể nếu cần
 
 // Enum cho PrinterStatus
-const PrinterStatusEnum = z.enum(["RUNNING", "DISABLED", "MAINTENANCE"]); // Thêm trạng thái phù hợp
+const PrinterStatusEnum = z.enum(["RUNNING", "DISABLED", "DELETED"]); // Thêm trạng thái phù hợp
 
 // Zod schema cho Printer
 const PrinterSchema = z.object({
@@ -15,7 +16,7 @@ const PrinterSchema = z.object({
   brand: z.string().max(256).min(1),
 
   // Model máy in (chuỗi, bắt buộc, tối đa 256 ký tự)
-  model: z.string().max(256).min(4),
+  model: z.string().max(256).min(1),
 
   // Mô tả chi tiết máy in (chuỗi, tùy chọn, tối đa 4096 ký tự)
   description: z.string().max(4096).optional(),
@@ -34,5 +35,7 @@ const PrinterSchema = z.object({
 });
 
 const UpdatePrinterSchema = PrinterSchema.partial();
+
+
 // Xuất schema
 export { PrinterSchema, UpdatePrinterSchema, CampusEnum, PrinterStatusEnum };

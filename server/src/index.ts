@@ -5,6 +5,9 @@ import PrintersController from "./controllers/printers.controller";
 import DocumentsController from "./controllers/documents.controller";
 import PurchaseOrdersController from "./controllers/purchaseOrders.controller";
 import PrintOrdersController from "./controllers/printOrders.controller";
+import ConfigController from "./controllers/config.controller";
+import StatisticController from "./controllers/statistic.controller";
+import ReportsController from "./controllers/reports.controller";
 
 dotenv.config();
 
@@ -15,6 +18,9 @@ const app = new App([
   new DocumentsController(),
   new PurchaseOrdersController(),
   new PrintOrdersController(),
+  new ConfigController(),
+  new StatisticController(),
+  new ReportsController(),
 ], port);
 
 app.listen();

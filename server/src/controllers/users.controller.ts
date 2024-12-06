@@ -9,9 +9,7 @@ import { JwtProvider } from "../providers/jwt.provider";
 import ms from "ms";
 import { JwtPayload } from "../types/jwt-payload";
 import { tokenLife } from "../utils/constant";
-import { LoginSchema, RegisterSchema } from "../schemas/user.schema";
-import { SettingsService } from "../providers/settings.service";
-import { UpdateSettingsSchema } from "../schemas/settings.schema";
+import { LoginSchema, RegisterSchema, UpdateProfileSchema } from "../schemas/user.schema";
 import createHttpError from "http-errors";
 
 export default class UsersController extends BaseController {
@@ -38,9 +36,9 @@ export default class UsersController extends BaseController {
     this.router.get(this.path, this.getListUsers);
     this.router.delete(`${this.path}/logout`, this.logout);
     this.router.patch(
-      `${this.path}/update-settings`,
-      [new RequestValidator(UpdateSettingsSchema).validate()],
-      this.updateDefaultBalanceAndTimeToAddBalance,
+      `${this.path}`,
+      [new RequestValidator(UpdateProfileSchema).validate()],
+      this.updateProfile,
     );
   }
 
@@ -203,6 +201,17 @@ export default class UsersController extends BaseController {
       where: {
         user_id: request.jwtDecoded?.id,
       },
+      select: {
+        user_id: true,
+        email: true,
+        username: true,
+        role: true,
+        phone: true,
+        dob: true,
+        avatar: true,
+        balance: true,
+        created_at: true
+      },
     });
     if (!user) {
       response
@@ -224,16 +233,6 @@ export default class UsersController extends BaseController {
     },
   );
 
-  updateDefaultBalanceAndTimeToAddBalance = async (
-    request: express.Request,
-    response: express.Response,
-  ) => {
-    await SettingsService.writeSettings(request.body);
-    response
-      .status(StatusCodes.OK)
-      .json({ message: "Update balance successfully" });
-  };
-
   getListUsers = expressAsyncHandler(
     async (request: express.Request, response: express.Response) => {
       const users = await prisma.user.findMany();
@@ -243,4 +242,23 @@ export default class UsersController extends BaseController {
       });
     },
   );
+
+  updateProfile = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    if (!request.jwtDecoded?.id) {
+      return next(createHttpError(StatusCodes.UNAUTHORIZED, "Unauthorized"));
+    }
+    const updatedUser = await prisma.user.update({
+      where: { user_id: request.jwtDecoded?.id },
+      data: {
+        username: request.body.username,
+        email: request.body.email,
+        phone: request.body.phone,
+        dob: new Date(request.body.dob),
+      },
+    });
+    response.status(StatusCodes.OK).json({
+      data: updatedUser,
+      message: "Update profile successfully",
+    });
+  }
 }

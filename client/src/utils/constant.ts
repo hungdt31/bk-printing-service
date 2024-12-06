@@ -6,7 +6,7 @@ import { BsTwitterX } from "react-icons/bs";
 import { BiSolidUserAccount } from "react-icons/bi";
 import { RiFolderHistoryLine } from "react-icons/ri";
 import { FaPrint } from "react-icons/fa";
-import { MdContactSupport } from "react-icons/md";
+import { MdOutlineRequestPage } from "react-icons/md";
 import { IoBagAdd } from "react-icons/io5";
 import { FilePlus } from "lucide-react";
 import { FaFilePdf, FaFileImage } from "react-icons/fa";
@@ -15,7 +15,7 @@ import { FaFilePdf, FaFileImage } from "react-icons/fa";
 export const SubHeader = [
   {
     name: 'In tài liệu',
-    path: paths.Order,
+    path: paths.Document,
     icon: Printer
   },
   {
@@ -25,7 +25,7 @@ export const SubHeader = [
   },
   {
     name: 'Thanh toán',
-    path: paths.BuyPage,
+    path: paths.Order,
     icon: FilePlus
   }
 ]
@@ -51,7 +51,7 @@ export const socials = [
 
 export const navbar = [
   {
-    name: "Thông tin cá nhân",
+    name: "Tài khoản",
     path: paths.Profile,
     icon: BiSolidUserAccount
   },
@@ -62,18 +62,18 @@ export const navbar = [
   },
   {
     name: "Đặt in",
-    path: paths.Order,
+    path: paths.Document,
     icon: FaPrint
   },
   {
     name: "Thanh toán",
-    path: paths.BuyPage,
+    path: paths.Order,
     icon: IoBagAdd
   },
   {
-    name: "Hỗ trợ",
-    path: paths.Support,
-    icon: MdContactSupport
+    name: "Mua trang in",
+    path: paths.Purchase,
+    icon: MdOutlineRequestPage
   }
 ]
 
@@ -82,7 +82,15 @@ export const queryKeys = {
   profile: 'profile',
   printOrderHistory: 'printOrderHistory',
   documentById: 'documentById',
-  listPrintOrders: 'listPrintOrders'
+  listPrintOrders: 'listPrintOrders',
+  priceForPurchase: 'priceForPurchase',
+  config: 'config',
+  statistic: 'statistic',
+  adminStatistic: 'adminStatistic',
+  printers: 'printers',
+  purchaseOrders: 'purchaseOrders',
+  generateReport: 'generateReport',
+  listPrintOrdersByAdmin: 'listPrintOrdersByAdmin'
 }
 
 export const formatDate = (date: string) => {
@@ -152,5 +160,30 @@ export const iconFiles = [
 ]
 
 export const localStorageKeys = {
-  documentId: 'documentId'
+  documentId: 'documentId',
+  pageAdded: 'pageAdded'
+}
+
+export const paymentMethods = [
+  {
+    label: 'Chuyển khoản Ngân Hàng/Internet Banking',
+    value: 'BANKING',
+    logo: `${import.meta.env.VITE_FRONT_END_URL}/logo/vnpay.png`
+  },
+  {
+    label: 'Chuyển khoản qua ZaloPay',
+    value: 'ZALOPAY',
+    logo: `${import.meta.env.VITE_FRONT_END_URL}/logo/zalopay.webp`
+  },
+  {
+    label: 'Chuyển khoản qua Momo',
+    value: 'MOMO',
+    logo: `${import.meta.env.VITE_FRONT_END_URL}/logo/momo.png`
+  }
+]
+
+export const role = {
+  ADMIN: 'SPSO',
+  STUDENT: 'STUDENT',
+  LECTURER: 'LECTURER'
 }

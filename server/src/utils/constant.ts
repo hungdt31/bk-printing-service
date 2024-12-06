@@ -9,6 +9,7 @@ export const colorText = "\x1b[36m%s\x1b[0m";
 
 export const protectedRoutes: ProtectedRoute[] = [
   { path: "/users/profile", method: 'GET' },
+  { path: "/users", method: 'PATCH' },
   { path: "/documents/upload", method: 'POST' },
   { path: "/documents/:id", method: 'ALL' },
   { path: "/documents/list", method: 'GET' },
@@ -20,7 +21,9 @@ export const protectedRoutes: ProtectedRoute[] = [
   { path: "/print-orders/history", method: 'GET' },
   { path: "/printers", method: 'ALL' },
   { path: "/print-orders/bulk-payment", method: 'PUT'},
-  { path: "/print-orders/:id", method: 'PATCH'}
+  { path: "/print-orders/:id", method: 'PATCH'},
+  { path: "/config", method: 'GET'},
+  { path: "/statistic/me", method: 'GET'},
 ];
 
 export const spsoRoutes: ProtectedRoute[] = [
@@ -30,6 +33,9 @@ export const spsoRoutes: ProtectedRoute[] = [
   { path: "/print-orders/:id", method: 'GET' },
   { path: "/users", method: 'GET' },
   { path: "/documents/:id", method: 'GET' },
+  { path: "/config", method: 'PUT'},
+  { path: "/statistic", method: 'ALL'},
+  { path: "/print-orders/history", method: 'POST'},
 ];
 
 export const tokenLife = {

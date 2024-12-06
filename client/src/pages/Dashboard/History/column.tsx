@@ -37,7 +37,7 @@ export const columns: ColumnDef<PrintOrder>[] = [
     accessorKey: "num_pages_consumed",
     header: "Thanh toán",
     cell: ({ row }) => {
-      return <p className="text-center text-sm pr-5">{row.original.num_pages_consumed}</p>
+      return <p className="text-sm pl-7">{row.original.num_pages_consumed}</p>
     }
   },
   {
