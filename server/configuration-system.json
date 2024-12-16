@@ -1,5 +1,5 @@
 {
-  "DEFAULT_BALANCE": 30,
+  "DEFAULT_BALANCE": 35,
   "DATE_TO_UPDATE": "0 0 1 * *",
   "PERMITTED_FILE_TYPES": [
     "application/pdf",
@@ -9,11 +9,10 @@
     "image/png",
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "application/vnd.ms-powerpoint",
     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     "image/jpeg"
   ],
   "MAX_FILE_SIZE": 15728640,
-  "UPDATED_AT": "2024-12-06T05:34:34.095Z",
+  "UPDATED_AT": "2024-12-08T14:32:17.286Z",
   "PRICE_PER_A4": 500
 }

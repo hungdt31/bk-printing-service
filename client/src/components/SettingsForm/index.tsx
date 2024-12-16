@@ -15,7 +15,7 @@ import { createOrder } from "@/action/printOrder";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useListPrintOrders } from "@/hooks/printOrder";
-import OrderCard from "@/components/OrderCard";
+// import OrderCard from "@/components/OrderCard";
 import { localStorageKeys } from "@/utils/constant";
 
 export const SettingsForm = ({
@@ -238,6 +238,17 @@ export const SettingsForm = ({
           )}
         </div>
         <p className="text-sm text-gray-500 mt-5">Số trang tiêu tốn là số trang tính vào số trang khả dụng của bạn. Nếu bạn chọn in giấy A3 thì số trang tiêu tốn sẽ gấp đôi số trang in.</p>
+        <div className="flex flex-col">
+          <p className="font-semibold text-md">Các nơi nhận:</p>
+          <ul className="grid sm:grid-cols-2">
+            {printers
+              .map((printer: Printer) => (
+                <li key={printer.printer_id}>
+                  {printer.name} - {printer.loc_campus} - {printer.loc_building} - {printer.loc_room}
+                </li>
+              ))}
+          </ul>
+        </div>
         <div className="flex flex-wrap items-center justify-center gap-4 mt-7">
           {isPending ? (
             <>
@@ -256,7 +267,7 @@ export const SettingsForm = ({
               <span className="border-l-2 border-green-700 pl-2">Thêm vào giỏ hàng</span>
             </Button>
           )}
-          <OrderCard order={form.getValues()} disabled={isPending || consumedPages > balance} />
+          {/* <OrderCard order={form.getValues()} disabled={isPending || consumedPages > balance} /> */}
         </div>
       </form>
     </Form>

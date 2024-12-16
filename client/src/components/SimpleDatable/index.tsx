@@ -3,7 +3,9 @@
 import {
   ColumnDef,
   flexRender,
-  Table as TableType,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
 } from "@tanstack/react-table"
 
 import {
@@ -16,33 +18,56 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import React from "react"
+import { PrintOrder } from "@/types/printOrder"
 import { LoadingFullLayout } from "../LoadingFullLayout"
+
 import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
+  data: TData[]
   onAction?: (selectedIds: number[]) => void
   actionLabel?: string
   selectBehavior?: boolean
+  balance?: number
   isLoading?: boolean
   variant?: 'main' | 'sub' | 'none'
-  headerChildren?: React.ReactNode
-  footerChildren?: React.ReactNode
-  table: TableType<TData>
+  children?: React.ReactNode
 }
 
-export function DataTable<TData, TValue>({
+export function SimpleDataTable<TData, TValue>({
   columns,
+  data,
+  onAction,
+  actionLabel = "Xử lý",
   selectBehavior = false,
+  balance = 0,
   isLoading = false,
   variant = 'main',
-  headerChildren,
-  footerChildren,
-  table
+  children,
 }: DataTableProps<TData, TValue>) {
+  const [rowSelection, setRowSelection] = React.useState({})
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onRowSelectionChange: setRowSelection,
+    state: {
+      rowSelection,
+    },
+  })
+  const totalPagesConsumed = table.getFilteredSelectedRowModel().rows.reduce((acc, row) => acc + (row.original as PrintOrder).num_pages_consumed, 0);
+  const handleAction = () => {
+    const selectedIds = table.getFilteredSelectedRowModel().rows.map(
+      (row) => (row.original as PrintOrder).print_id
+    )
+    onAction?.(selectedIds)
+  }
+
   return (
     <>
-      {headerChildren}
+      {children}
       <div className={cn("border-2 rounded-lg shadow-sm", variant == 'main'
         ? "border-primary/80" :
         variant == 'sub' ? "border-gray-500" : '')}>
@@ -111,15 +136,30 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
-      <div className="flex items-center justify-between gap-3">
-        {
-          selectBehavior &&
-          <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+      <div className="flex items-center justify-between">
+        {selectBehavior ? <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div> : <div className="flex-1 text-sm text-muted-foreground">{table.getFilteredRowModel().rows.length} kết quả</div>}
+
+        {onAction && (
+          <div className="flex items-center gap-2 text-xs">
+            <Button
+              variant="outline"
+              className="text-primary px-6 py-5"
+            >
+              <p className="text-sm">Tổng số trang in:</p>
+              <span>{totalPagesConsumed}</span>
+            </Button>
+            <Button
+              className="px-6 py-5"
+              onClick={handleAction}
+              disabled={table.getFilteredSelectedRowModel().rows.length === 0 || balance < totalPagesConsumed || isLoading}
+            >
+              {actionLabel}
+            </Button>
           </div>
-        }
-        {footerChildren}
+        )}
       </div>
     </>
   )

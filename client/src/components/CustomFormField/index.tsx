@@ -37,6 +37,7 @@ interface CustomFieldProps<T extends FieldValues> {
   labelClassName?: string;
   inputClassName?: string;
   radioValue?: string;
+  defaultValue?: string;
 }
 
 const CustomField = <T extends FieldValues>({
@@ -57,6 +58,7 @@ const CustomField = <T extends FieldValues>({
   radioValue,
   inputClassName = "",
   step = 0.1,
+  defaultValue,
 }: CustomFieldProps<T>) => {
   return (
     <FormField
@@ -155,6 +157,7 @@ const CustomField = <T extends FieldValues>({
                 case "date":
                   return (
                     <Input
+                      defaultValue={defaultValue}
                       type="date"
                       placeholder={placeholder}
                       {...field}

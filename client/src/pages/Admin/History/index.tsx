@@ -10,8 +10,8 @@ import { SearchCheck, Filter } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { usePrintOrdersByAdmin } from '@/hooks/printOrder'
 import { usePrinter } from '@/hooks/printer'
-import { DataTable } from '@/components/DataTable'
 import { columns } from './columns'
+import { SimpleDataTable } from '@/components/SimpleDatable'
 
 export default function HistoryPage() {
   // 1. Define your form.
@@ -138,7 +138,7 @@ export default function HistoryPage() {
               />
             </div>
           }
-          <DataTable isLoading={isPending} variant='none' columns={columns} data={printOrderData || []} />
+          <SimpleDataTable isLoading={isPending} variant='none' columns={columns} data={printOrderData || []} />
         </form>
       </Form>
     </AdminWrapper>

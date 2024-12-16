@@ -90,7 +90,8 @@ export const queryKeys = {
   printers: 'printers',
   purchaseOrders: 'purchaseOrders',
   generateReport: 'generateReport',
-  listPrintOrdersByAdmin: 'listPrintOrdersByAdmin'
+  listPrintOrdersByAdmin: 'listPrintOrdersByAdmin',
+  myPurchaseOrders: 'myPurchaseOrders'
 }
 
 export const formatDate = (date: string) => {

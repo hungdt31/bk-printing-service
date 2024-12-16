@@ -88,7 +88,7 @@ export const createColumns = (
       }
     },
     {
-      accessorKey: "print_id",
+      accessorKey: "",
       header: "Chi tiết",
       cell: ({ row }) => {
         return (

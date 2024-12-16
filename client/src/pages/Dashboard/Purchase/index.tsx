@@ -8,7 +8,7 @@ import CustomField from "@/components/CustomFormField"
 import { localStorageKeys, paymentMethods } from "@/utils/constant"
 import { Form } from "@/components/ui/form"
 import { useGetConfig } from "@/hooks/config"
-import { formatCurrency } from "@/helpers/format"
+import { formatCurrency, formatDate } from "@/helpers/format"
 import { LoadingFullLayout } from "@/components/LoadingFullLayout"
 import ErrorPage from "@/components/Error"
 import { useWindowWidth } from "@react-hook/window-size"
@@ -18,8 +18,17 @@ import { useProfile } from "@/hooks/user"
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { TbSum } from "react-icons/tb";
 import { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { useUserPurchaseOrder } from "@/hooks/purchaseOrder"
+import { PurchaseOrder } from "@/types/purchaseOrder"
 
 export const PurchasePage = () => {
+  const { data: purchaseOrders } = useUserPurchaseOrder();
   const { data: profile, refetch } = useProfile();
   const [isPending, setIsPending] = useState(false);
   const width = useWindowWidth();
@@ -58,8 +67,8 @@ export const PurchasePage = () => {
           <div className="space-y-4 overflow-x-scroll">
             <p className="text-md font-bold border-primary pr-2 inline text-primary border-b-4">Phương thức thanh toán</p>
             <div className="space-y-2">
-              {paymentMethods.map((method) => (
-                <div className="flex items-center justify-between gap-2 border-2 border-gray-500 rounded-md p-2">
+              {paymentMethods.map((method, index) => (
+                <div key={index} className="flex items-center justify-between gap-2 border-2 border-gray-500 rounded-md p-2">
                   <CustomField
                     type="radio"
                     label={method.label}
@@ -88,6 +97,7 @@ export const PurchasePage = () => {
                 label="Tổng số trang"
                 horizontal
                 max={100}
+                step={1}
                 className="justify-start space-y-0"
                 labelClassName="text-md font-bold text-primary border-primary pr-2 border-b-4"
                 inputClassName="max-w-[100px] focus:text-primary font-bold"
@@ -104,6 +114,21 @@ export const PurchasePage = () => {
           </div>
         </form>
       </Form>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="font-bold text-lg">Lịch sử giao dịch</AccordionTrigger>
+          <AccordionContent className="grid grid-cols-2 gap-3">
+            {purchaseOrders && purchaseOrders.map((order : PurchaseOrder, index) => (
+              <div key={index} className="border-2 border-gray-500 rounded-md p-2 bg-muted">
+                <div className="flex items-center justify-between gap-2"><p className="font-bold">Mã đơn hàng: {order.purchase_id}</p> <span className="text-gray-500 text-xs">{formatDate(order.updated_at)}</span></div>
+                <p>Số trang: {order.amount}</p>
+                <p>Phương thức thanh toán: {order.method}</p>
+                <p>Giá tiền: {formatCurrency(order.price)}</p>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </DashboardWrapper>
   )
 }

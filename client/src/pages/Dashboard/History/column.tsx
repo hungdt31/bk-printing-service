@@ -131,7 +131,7 @@ export const columns: ColumnDef<PrintOrder>[] = [
                         {row.original.status}
                       </span>
                     </p>
-                    <p className="font-semibold">Máy in: <span className="font-normal">{row.original.printer?.name}</span></p>
+                    <p className="font-semibold">Máy in: <span className="font-normal">{row.original.printer?.name} - {row.original.printer?.loc_campus} - {row.original.printer?.loc_building} - {row.original.printer?.loc_room}</span></p>
                     <p className="font-semibold">Tài liệu: <span className="font-normal">{row.original.document?.filename}</span></p>
                   </div>
 
@@ -174,7 +174,7 @@ export const columns: ColumnDef<PrintOrder>[] = [
                   <h3 className="font-semibold text-lg">Danh sách trang in</h3>
                   <div className="max-h-24 overflow-y-auto bg-gray-50 p-2 rounded">
                     <p className="font-normal">
-                      {row.original.pages_to_be_printed.join(', ')}
+                      {row.original.pages_to_be_printed.join('/ ')}
                     </p>
                   </div>
                 </div>

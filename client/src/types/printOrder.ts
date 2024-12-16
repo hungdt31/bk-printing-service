@@ -1,5 +1,8 @@
 export interface Printer {
   name: string;
+  loc_building: string,
+  loc_campus: string,
+  loc_room: string,
 }
 
 export interface Document {

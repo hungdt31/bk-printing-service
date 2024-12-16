@@ -24,7 +24,12 @@ export default class PrintOrdersController extends BaseController {
 
   public initializeRoutes() {
     this.router.get(this.path, this.getListPrintOrders);
-    this.router.get(`${this.path}/history`, this.getHistoryPrintOrders);
+    this.router.post(`${this.path}/history/me`,
+      [
+        new RequestValidator(searchPrintOrder).validate(),
+      ], 
+      this.getHistoryPrintOrders
+    );
     this.router.get(
       `${this.path}/:id`,
       [validateResourceId],
@@ -64,6 +69,7 @@ export default class PrintOrdersController extends BaseController {
       response: express.Response,
       next: express.NextFunction,
     ) => {
+      const input = searchPrintOrder.safeParse(request.body);
       const user = await prisma.user.findUnique({
         where: {
           user_id: request.jwtDecoded?.id as number,
@@ -74,6 +80,11 @@ export default class PrintOrdersController extends BaseController {
               status: {
                 in: ["SUCCESS", "FAILED", "CANCELLED"],
               },
+              time_start: {
+                gte: input.data?.time_start,
+                lte: input.data?.time_end,
+              },
+              printer_id: input.data?.printer_id,
             },
             orderBy: {
               time_start: "desc",
@@ -82,6 +93,9 @@ export default class PrintOrdersController extends BaseController {
               printer: {
                 select: {
                   name: true,
+                  loc_building: true,
+                  loc_campus: true,
+                  loc_room: true
                 },
               },
               document: {

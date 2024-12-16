@@ -1,9 +1,19 @@
 import authorizedAxiosInstance from "@/lib/axios";
 import { PrintOrderResponse, PrintOrdersByAdminResponse } from "@/types/printOrder";
 
-export const getHistoryPrintOrders = async () => {
-  const result = await authorizedAxiosInstance.get<PrintOrderResponse>(
-    "/print-orders/history"
+export const getHistoryPrintOrders = async (props : {
+  status?: 'SUCCESS' | 'CANCELLED' | 'PENDING' | 'ALL',
+  name?: string,
+  time_start: Date,
+  time_end: Date,
+  printer_id?: number
+}) => {
+  const filteredProps = Object.fromEntries(
+    Object.entries(props).filter(([_, value]) => value !== null && value !== undefined && value !== 'ALL' && value !== 0)
+  );
+  const result = await authorizedAxiosInstance.post<PrintOrderResponse>(
+    "/print-orders/history/me",
+    filteredProps
   );
   return result.data.data;
 };

@@ -9,7 +9,7 @@ import pdfParse from "pdf-parse";
 import mammoth from "mammoth";
 import xlsx from "xlsx";
 import { MulterConfig } from "../config/multer.config";
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
 import { JwtPayload } from "../types/jwt-payload";

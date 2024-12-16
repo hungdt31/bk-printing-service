@@ -44,3 +44,24 @@ export const createPrinter = async (data: z.infer<typeof newPrinterSchema>) => {
     message: "Something went wrong"
   }
 }
+
+export const deletePrinter = async (printer_ids: number[]) => {
+  try {
+    const response = await authorizedAxiosInstance.delete(`/printers`, { data: { printer_ids } });
+    return {
+      data: response.data.data,
+      message: response.data.message
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return {
+        data: null,
+        message: error.response?.data.message
+      }
+    }
+  }
+  return {
+    data: null,
+    message: "Something went wrong"
+  }
+}

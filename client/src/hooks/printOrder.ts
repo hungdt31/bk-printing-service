@@ -3,10 +3,9 @@ import { getHistoryPrintOrders, getListPrintOrders, getPrintOrdersByAdmin } from
 import { queryKeys } from "@/utils/constant";
 
 export const usePrintOrderHistory = () => {
-  return useQuery({
-    queryKey: [queryKeys.printOrderHistory],
-    queryFn: getHistoryPrintOrders,
-    refetchOnMount: false, // không refetch khi component mount
+  return useMutation({
+    mutationKey: [queryKeys.printOrderHistory],
+    mutationFn: getHistoryPrintOrders,
     retry: false, // nếu không muốn retry khi có lỗi
   });
 };

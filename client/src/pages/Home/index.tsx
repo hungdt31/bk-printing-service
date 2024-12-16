@@ -8,8 +8,8 @@ export default function Home() {
       }}
       className="flex justify-center items-center gap-5 grow bg-cover bg-center"
     >
-      <h1 className="text-white text-[40px] max-w-[300px] text-center lg:text-left">
-        Welcome to BKP Service
+      <h1 className="text-white text-[40px] max-w-[400px] text-center lg:text-center">
+        Welcome to HCMUT Smart Printing Service System
       </h1>
     </div>
   );

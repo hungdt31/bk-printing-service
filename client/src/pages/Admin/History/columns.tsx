@@ -126,7 +126,7 @@ export const columns: ColumnDef<PrintOrderByAdmin>[] = [
     },
   },
   {
-    accessorKey: "print_id",
+    accessorKey: "user.email",
     header: "Chi tiết",
     cell: ({ row }) => {
       return (

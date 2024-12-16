@@ -6,6 +6,7 @@ import expressAsyncHandler from "express-async-handler";
 import RequestValidator from "../middlewares/request-validator";
 import { PrinterSchema, UpdatePrinterSchema } from "../schemas/printer.schema";
 import { validateResourceId } from "../middlewares/id.middleware";
+import createHttpError from "http-errors";
 
 export default class PrintersController extends BaseController {
   public path = "/printers";
@@ -29,6 +30,10 @@ export default class PrintersController extends BaseController {
       `${this.path}/:id`,
       [validateResourceId],
       this.deletePrinter,
+    );
+    this.router.delete(
+      `${this.path}`,
+      this.deleteListPrinter,
     );
     this.router.put(
       `${this.path}/:id`,
@@ -112,6 +117,39 @@ export default class PrintersController extends BaseController {
       response.status(StatusCodes.OK).json({
         data: updatedPrinter,
         message: "Update printer successfully!",
+      });
+    },
+  );
+
+  deleteListPrinter = expressAsyncHandler(
+    async (
+      request: express.Request,
+      response: express.Response,
+      next: express.NextFunction,
+    ) => {
+      const printerIds : number[] = request.body.printer_ids;
+      printerIds.forEach(async (id) => {
+        const printer = await prisma.printer.findFirst({
+          where: {
+            printer_id: id,
+          },
+        });
+        if (!printer) {
+          return next(
+            createHttpError(StatusCodes.BAD_REQUEST, `Printer with id ${id} not found!`),
+          );
+        }
+      });
+      await prisma.printer.deleteMany({
+        where: {
+          printer_id: {
+            in: printerIds,
+          },
+        },
+      });
+      response.status(StatusCodes.OK).json({
+        message: "Delete printers successfully!",
+        data: printerIds,
       });
     },
   );
