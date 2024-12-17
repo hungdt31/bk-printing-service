@@ -17,6 +17,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 
 // CustomField sẽ nhận thêm thuộc tính type cho Control
 interface CustomFieldProps<T extends FieldValues> {
@@ -156,14 +164,45 @@ const CustomField = <T extends FieldValues>({
                   )
                 case "date":
                   return (
-                    <Input
-                      defaultValue={defaultValue}
-                      type="date"
-                      placeholder={placeholder}
-                      {...field}
-                      className={inputClassName}
-                      disabled={disabled}
-                    />
+                    // <Input
+                    //   defaultValue={defaultValue}
+                    //   type="date"
+                    //   placeholder={placeholder}
+                    //   {...field}
+                    //   className={inputClassName}
+                    //   disabled={disabled}
+                    //   form="dd/MM/yyyy"
+                    // />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <div
+                            className={cn(
+                              "w-[200px] p-2 text-sm font-normal flex items-center justify-between border-[1px] shadow-sm rounded-lg",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="h-4 w-4 opacity-50" />
+                          </div>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   );
                 default:
                   return (

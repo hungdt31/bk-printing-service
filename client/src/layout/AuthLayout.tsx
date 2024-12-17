@@ -44,7 +44,7 @@ export const AuthLayout = () => {
         <div className="flex items-center justify-between border-b-[1px] shadow-md py-5 px-3 w-full bg-white">
           <Link to={paths.Home} className="flex items-center gap-3">
             <img src="logo.png" width={50} height={50} />
-            <h2 className="line-clamp-1">BKPS</h2>
+            <h2 className="line-clamp-1">SSPS</h2>
           </Link>
         </div>
       </div>

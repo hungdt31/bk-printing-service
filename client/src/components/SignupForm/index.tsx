@@ -18,10 +18,10 @@ export function SignupForm() {
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
-      type: "STUDENT"
+      role: "STUDENT"
     },
   });
 
@@ -54,7 +54,7 @@ export function SignupForm() {
           <div className="flex sm:items-start gap-3 flex-col sm:flex-row">
             <CustomField
               control={form.control}
-              name="name"
+              name="username"
               label="Họ tên"
               placeholder="shadcn"
               type="text"
@@ -62,7 +62,7 @@ export function SignupForm() {
             />
             <CustomField
               control={form.control}
-              name="type"
+              name="role"
               label="Vai trò"
               placeholder="Chọn một vai trò"
               type="select"

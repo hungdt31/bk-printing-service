@@ -119,9 +119,14 @@ export function SimpleDataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-center text-sm font-medium mr-5">
+          Trang {table.getState().pagination.pageIndex + 1} / {" "}
+          {table.getPageCount()}
+        </div>
         <Button
           variant="outline"
           size="sm"
+          type="button"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -130,6 +135,7 @@ export function SimpleDataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
+          type="button"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >

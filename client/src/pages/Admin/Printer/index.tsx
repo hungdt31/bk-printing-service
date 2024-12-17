@@ -122,18 +122,21 @@ export default function PrinterPage() {
                             label='Tên máy in'
                             placeholder=''
                             control={form.control}
+                            inputClassName='text-black'
                           />
                           <CustomField
                             name='brand'
                             label='Thương hiệu'
                             placeholder=''
                             control={form.control}
+                            inputClassName='text-black'
                           />
                           <CustomField
                             name='model'
                             label='Model'
                             placeholder=''
                             control={form.control}
+                            inputClassName='text-black'
                           />
                           <CustomField
                             type='select'
@@ -150,6 +153,7 @@ export default function PrinterPage() {
                                 label: 'TWO'
                               }
                             ]}
+                            inputClassName='text-black'
                             control={form.control}
                           />
                           <CustomField
@@ -157,6 +161,7 @@ export default function PrinterPage() {
                             name='loc_building'
                             label='Tòa nhà'
                             placeholder='H1'
+                            inputClassName='text-black'
                             options={[
                               {
                                 value: 'H1',
@@ -181,6 +186,7 @@ export default function PrinterPage() {
                             name='loc_room'
                             label='Phòng'
                             placeholder=''
+                            inputClassName='text-black'
                             control={form.control}
                           />
                         </div>
@@ -189,6 +195,7 @@ export default function PrinterPage() {
                           label='Mô tả'
                           placeholder='something about this printer'
                           control={form.control}
+                          inputClassName='text-black'
                         />
                         <div className='flex justify-center gap-3'>
                           <Button type="button" onClick={() => form.reset({

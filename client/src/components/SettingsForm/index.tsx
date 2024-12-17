@@ -176,6 +176,7 @@ export const SettingsForm = ({
             placeholder="Nhập số trang trên mỗi tờ"
             type="number"
             max={page_count}
+            step={1}
             disabled={isPending}
             horizontal
           />

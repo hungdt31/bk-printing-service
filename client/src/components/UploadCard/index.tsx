@@ -188,8 +188,8 @@ export default function UploadCard() {
       <div className="flex items-center gap-3">
         <SiAdguard fontSize={30} />
         <p className="text-xs">
-          Your files will be securely handled by BKPS servers. <IoMdInformationCircle className="inline text-primary/50" />
-          <br />By using this service, you agree to the BKPS <Link to={paths.Home} className="text-primary/50">Terms of Use</Link> and <Link to={paths.Home} className="text-primary/50">Privacy Policy.</Link>
+          Your files will be securely handled by SSPS servers. <IoMdInformationCircle className="inline text-primary/50" />
+          <br />By using this service, you agree to the SSPS <Link to={paths.Home} className="text-primary/50">Terms of Use</Link> and <Link to={paths.Home} className="text-primary/50">Privacy Policy.</Link>
         </p>
       </div>
     </>

@@ -50,7 +50,7 @@ export function AdminSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="pb-5 pt-9 space-y-2">
-            <h2>BKPS</h2>
+            <h2>SSPS</h2>
             <Badge className="rounded-full ml-2">SPSO</Badge>
           </SidebarGroupLabel>
           <SidebarGroupContent className="mt-10">
