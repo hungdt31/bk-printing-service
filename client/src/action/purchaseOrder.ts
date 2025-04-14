@@ -18,6 +18,7 @@ export const purchase = async (data: z.infer<typeof PurchaseSchema>) => {
   try {
     const newPurchaseOrder = await purchaseOrder(data);
     if (newPurchaseOrder.data) {
+      // @ts-ignore
       const updatedPurchaseOrder = await updatePurchaseOrder(newPurchaseOrder.data.purchase_id, "PAID");
       if (updatedPurchaseOrder) {
         return {
