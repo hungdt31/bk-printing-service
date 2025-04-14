@@ -18,7 +18,7 @@ export interface PurchaseOrder {
 
 export interface PurchaseOrderResponse {
   message: string;
-  data: PurchaseOrder;
+  data: PurchaseOrder[];
 }
 
 export interface UserPurchaseOrdersResponse {

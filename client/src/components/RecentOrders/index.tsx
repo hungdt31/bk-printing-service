@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar"
+import { Avatar, AvatarImage } from "../ui/avatar"
 import { usePurchaseOrders } from "@/hooks/purchaseOrder"
 import { LoadingFullLayout } from "@/components/LoadingFullLayout";
 import ErrorPage from "@/components/Error";

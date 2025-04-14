@@ -29,7 +29,7 @@ export default function OrderCard({
   order,
   disabled = false
 }: OrderCardProps) {
-  const { refetch: refetchPrintOrderHistory } = usePrintOrderHistory();
+  const { reset: refetchPrintOrderHistory } = usePrintOrderHistory();
   const { refetch: refetchProfile } = useProfile();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);

@@ -66,7 +66,6 @@ const CustomField = <T extends FieldValues>({
   radioValue,
   inputClassName = "",
   step = 0.1,
-  defaultValue,
 }: CustomFieldProps<T>) => {
   return (
     <FormField

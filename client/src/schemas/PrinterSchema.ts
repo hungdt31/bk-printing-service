@@ -1,4 +1,3 @@
-import { FaRunning } from "react-icons/fa";
 import { z } from "zod";
 
 export const printerSchema = z.object({

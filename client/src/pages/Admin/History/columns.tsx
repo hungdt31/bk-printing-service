@@ -150,8 +150,8 @@ export const columns: ColumnDef<PrintOrderByAdmin>[] = [
                         {
                           "bg-green-100 text-green-800": row.original.status === "SUCCESS",
                           "bg-red-100 text-red-800": row.original.status === "FAILED",
-                          "bg-yellow-100 text-yellow-800": row.original.status === "PENDING",
-                          "bg-blue-100 text-blue-800": row.original.status === "PROGRESS"
+                          "bg-yellow-100 text-yellow-800": row.original.status === "CANCELLED",
+                          "bg-blue-100 text-blue-800": row.original.status === "PENDING",
                         }
                       )}>
                         {row.original.status}
@@ -186,12 +186,15 @@ export const columns: ColumnDef<PrintOrderByAdmin>[] = [
                       <p className="font-semibold">Khổ giấy: <span className="font-normal">{row.original.page_size}</span></p>
                       <p className="font-semibold">Hướng giấy: <span className="font-normal">{row.original.orientation == 'PORTRAIT' ? "Thẳng" : "Ngang"}</span></p>
                       <p className="font-semibold">In hai mặt: <span className="font-normal">{row.original.side === 'ONE' ? 'Không' : 'Có'}</span></p>
+                      <p className="font-semibold">Máy in: <span className="font-normal">{row.original.printer.name}</span></p>
                     </div>
                     <div className="space-y-2">
                       <p className="font-semibold">Số trang trên tờ: <span className="font-normal">{row.original.pages_per_sheet}</span></p>
                       <p className="font-semibold">Tỉ lệ: <span className="font-normal">{row.original.scale * 100}%</span></p>
                       <p className="font-semibold">Số trang đã in: <span className="font-normal">{row.original.pages_to_be_printed.length}</span></p>
+                      <p className="font-semibold">Nơi nhận: <span className="font-normal">{row.original.printer.loc_campus} - {row.original.printer.loc_building} - {row.original.printer.loc_room}</span></p>
                     </div>
+                    <div></div>
                   </div>
                 </div>
 

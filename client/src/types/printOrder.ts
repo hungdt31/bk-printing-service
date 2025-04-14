@@ -97,6 +97,13 @@ export interface PrintOrderByAdmin {
       size: number
     }
   };
+  printer: {
+    printer_id: number;
+    name: string;
+    loc_building: string;
+    loc_campus: string;
+    loc_room: string;
+  };
 }
 
 export interface PrintOrdersByAdminResponse {

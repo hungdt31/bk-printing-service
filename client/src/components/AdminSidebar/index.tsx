@@ -1,4 +1,4 @@
-import { Home, Printer, Settings, FileBarChart, MessageSquareMore, History } from "lucide-react"
+import { Home, Printer, Settings, FileBarChart, History } from "lucide-react"
 
 import {
   Sidebar,

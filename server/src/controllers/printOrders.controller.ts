@@ -472,6 +472,9 @@ export default class PrintOrdersController extends BaseController {
           status: input.data?.status,
           printer_id: input.data?.printer_id,
         },
+        orderBy: {
+          time_start: "desc",
+        },
         include: {
           user: {
             select: {
@@ -490,6 +493,14 @@ export default class PrintOrdersController extends BaseController {
               filename: true,
               mimetype: true,
               size: true
+            }
+          },
+          printer: {
+            select: {
+              name: true,
+              loc_building: true,
+              loc_campus: true,
+              loc_room: true
             }
           }
         }
