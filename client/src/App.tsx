@@ -6,7 +6,7 @@ import { AuthRoutes, PrivateRoutes, PublicRoutes, AdminRoutes } from "./route";
 import { _Routes } from "./types/route";
 
 export default function App() {
-  let location = useLocation();
+  const location = useLocation();
 
   useEffect(() => {
     nprogress.start();

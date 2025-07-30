@@ -23,7 +23,7 @@ authorizedAxiosInstance.defaults.withCredentials = true;
  */
 
 // Add a request interceptor: can thiệp vào giữa những request API
-let refreshTokenPromise: any = null;
+let refreshTokenPromise: Promise<void> | null = null;
 authorizedAxiosInstance.interceptors.request.use(
   (config) => {
     return config;

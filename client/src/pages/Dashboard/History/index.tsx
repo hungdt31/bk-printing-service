@@ -51,7 +51,7 @@ export const HistoryLog = () => {
         time_end: new Date(year, 12, 1),
       })
     }
-  }, [printerData, form]);
+  }, [printerData, form, mutateAsync, year]);
 
   return (
     <DashboardWrapper

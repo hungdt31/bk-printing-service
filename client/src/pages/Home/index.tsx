@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div
       style={{
-        backgroundImage: `url("${import.meta.env.VITE_FRONT_END_URL}/background.png")`,
+        backgroundImage: `url("${window.location.origin}/background.png")`,
         backgroundRepeat: "no-repeat",
         textShadow: "2px 2px #0984ff",
       }}

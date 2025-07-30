@@ -10,4 +10,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Cấu hình vite development server
+  server: {
+    port: 3000,
+    host: true,
+    watch: {
+      // Bật chế độ polling để theo dõi thay đổi file
+      usePolling: true,
+    },
+  },
 });

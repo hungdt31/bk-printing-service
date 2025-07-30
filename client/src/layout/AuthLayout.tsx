@@ -34,7 +34,7 @@ export const AuthLayout = () => {
   return (
     <div
       style={{
-        backgroundImage: `url("background.png")`,
+        backgroundImage: `url("${window.location.origin}/background.png")`,
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundSize: "cover"

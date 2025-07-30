@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { handleLogin } from "@/action/login";
 import { toast } from "react-hot-toast";
 import { DEFAULT_DIRECT_AFTER_LOGIN } from "@/utils/path";
-import { queryClient } from "@/hooks/queryProvider";
+import { queryClient } from "@/hooks/queryClient";
 
 export function LoginForm() {
   const navigate = useNavigate();

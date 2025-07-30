@@ -74,7 +74,8 @@ const CustomField = <T extends FieldValues>({
       render={({ field }) => (
         <FormItem className={cn(
           horizontal ? "flex items-center gap-2" : "",
-          className
+          className,
+          "space-y-0"
         )}>
           <FormLabel className={cn(horizontal ? "whitespace-nowrap" : "",
             horizontal && labelPosition === 'after' ? "order-last" : "",

@@ -169,17 +169,17 @@ export const paymentMethods = [
   {
     label: 'Chuyển khoản Ngân Hàng/Internet Banking',
     value: 'BANKING',
-    logo: `${import.meta.env.VITE_FRONT_END_URL}/logo/vnpay.png`
+    logo: `${window.location.origin}/logo/vnpay.png`
   },
   {
     label: 'Chuyển khoản qua ZaloPay',
     value: 'ZALOPAY',
-    logo: `${import.meta.env.VITE_FRONT_END_URL}/logo/zalopay.webp`
+    logo: `${window.location.origin}/logo/zalopay.webp`
   },
   {
     label: 'Chuyển khoản qua Momo',
     value: 'MOMO',
-    logo: `${import.meta.env.VITE_FRONT_END_URL}/logo/momo.png`
+    logo: `${window.location.origin}/logo/momo.png`
   }
 ]
 
